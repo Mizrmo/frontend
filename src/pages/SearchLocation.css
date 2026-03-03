@@ -1,0 +1,283 @@
+.search-location-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Background Dimmed Overlay */
+.search-map-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.search-map-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-dim-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 2;
+}
+
+/* Bottom Sheet (Rectangle 548) */
+.search-bottom-sheet {
+    position: absolute;
+    top: 283px;
+    left: 2px;
+    width: 393px;
+    height: 569px;
+    /* 852 - 283 */
+    background: #FFFFFF;
+    border-radius: 24px 24px 0 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.sheet-handle-bar {
+    width: 134px;
+    height: 5px;
+    background: #B6B6B6;
+    border-radius: 100px;
+    margin: 12px auto;
+    flex-shrink: 0;
+}
+
+/* Content Area - Changed to allow natural scrolling */
+.sheet-content-scroll {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 80px;
+    /* Room for home indicator */
+}
+
+.sheet-content-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Search Title Styling */
+.search-title-text {
+    width: 198px;
+    height: 30px;
+    margin-top: 29px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    color: #000000;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Horizontal Divider (Line 13) */
+.search-divider-line {
+    width: 392px;
+    height: 0;
+    border-top: 1px solid #DDDDDD;
+    margin-top: 12px;
+    margin-top: 28px;
+    /* Adjusted to visually center based on request */
+    align-self: center;
+    opacity: 1;
+}
+
+/* Input Fields Container */
+.search-input-section {
+    width: 362px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.modern-input-field {
+    height: 45px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+.modern-input-field input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #1A1A1A;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.modern-input-field input::placeholder,
+.field-label,
+.field-value {
+    color: #CBD5E1;
+}
+
+.field-label,
+.field-value {
+    font-size: 12px;
+    line-height: 17px;
+}
+
+.icon-gray {
+    color: #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-gray svg {
+    width: 24px;
+    height: 24px;
+}
+
+.datetime-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.datetime-row .modern-input-field {
+    width: 166px;
+    height: 45px;
+    flex: none;
+    padding: 14px 17px;
+    box-sizing: border-box;
+}
+
+/* Search Button */
+.search-btn-primary {
+    width: 362px;
+    height: 45px;
+    margin-top: 20px;
+    background: #0056B3;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+/* Recent Places section */
+.recent-places-wrap {
+    width: 362px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
+
+.recent-places-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #64748B;
+    margin-bottom: 11px;
+    font-family: 'Montserrat', sans-serif;
+    text-align: left;
+}
+
+.recent-places-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.recent-place-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 45px;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.location-icon-circle {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.yellow-pin {
+    color: #FFCC00;
+}
+
+.place-text-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.place-main-name {
+    display: block;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A1A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.place-sub-addr {
+    display: block;
+    font-size: 13px;
+    color: #94A3B8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.place-distance {
+    font-size: 15px;
+    font-weight: 500;
+    color: #64748B;
+    flex-shrink: 0;
+}
+
+/* Critical Fix: Ensure Home Indicator is always on top */
+.search-location-screen .home-indicator {
+    z-index: 1000 !important;
+}

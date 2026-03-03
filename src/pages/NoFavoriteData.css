@@ -1,0 +1,119 @@
+.nf-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ── Header ── */
+.nf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 4px;
+    background: #FFFFFF;
+}
+
+.nf-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #1A1A1A;
+    cursor: pointer;
+}
+
+.nf-header-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.nf-skip-btn {
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #E2E8F0;
+    cursor: pointer;
+}
+
+/* ── Content ── */
+.nf-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 80px;
+    /* Offset to center vertically between header and bottom nav */
+}
+
+.nf-illustration {
+    width: 122px;
+    height: 154px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.nf-message {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #94A3B8;
+    margin: 0;
+}
+
+/* ── Bottom Nav Bar (Shared) ── */
+.ut-tab-bar {
+    height: 80px;
+    background: #FAFAFA;
+    border-top: 1px solid #EDF0F3;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px 8px;
+    flex-shrink: 0;
+}
+
+.ut-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #94A3B8;
+    padding: 4px 8px;
+}
+
+.ut-nav-btn.active {
+    color: #0056B3;
+}
+
+.ut-nav-icon-bg {
+    width: 52px;
+    height: 34px;
+    background: #0056B3;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
