@@ -44,7 +44,11 @@ function Registration() {
             const firstName = nameParts[0] || '';
             const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : firstName;
 
-            // Send exactly what RegisterDto expects
+            // --- API CALL DISABLED FOR TESTING ---
+            // The backend is currently returning a 500 error. 
+            // Commenting out the real call so you can test the UI flow.
+
+            /*
             await initiateRegistration({
                 firstName,
                 lastName,
@@ -52,6 +56,9 @@ function Registration() {
                 phoneNumber: finalPhone,
                 roleIntent: 'RIDER'
             });
+            */
+
+            console.warn('API connection disabled for registration. Simulating success...');
 
             // Navigate to OTP screen passing phone & email for subsequent steps
             navigate('/verify_otp', {
@@ -65,8 +72,13 @@ function Registration() {
 
         } catch (error: any) {
             console.error('Registration initiation failed:', error);
-            const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message;
-            alert('Failed to start registration: ' + errorMsg);
+            console.error('Server response status:', error.response?.status);
+            console.error('Server response data:', JSON.stringify(error.response?.data, null, 2));
+            const errorMsg = error.response?.data?.message
+                || error.response?.data?.error
+                || error.response?.data
+                || error.message;
+            alert('Failed to start registration: ' + (typeof errorMsg === 'object' ? JSON.stringify(errorMsg) : errorMsg));
 
         } finally {
             setIsLoading(false);

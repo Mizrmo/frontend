@@ -20,11 +20,15 @@ function Verification() {
     const handleResend = async () => {
         setIsResending(true);
         try {
+            // --- API CALL DISABLED FOR TESTING ---
+            /*
             await resendOtp({
                 phoneNumber: phoneNumber,
                 type: isPasswordReset ? 'PASSWORD_RESET' : 'PHONE_VERIFICATION'
             });
-            alert('OTP resent successfully!');
+            */
+            console.warn('Resend API connection disabled. Simulating success...');
+            alert('OTP resent successfully! (Simulated)');
             setOtp(['', '', '', '', '', '']);
         } catch (error: any) {
             console.error('Resend failed:', error);
@@ -60,13 +64,19 @@ function Verification() {
 
         setIsLoading(true);
         try {
+            // --- API CALL DISABLED FOR TESTING ---
+            /*
             // POST /auth/verify-otp → returns { userId, ... }
             const result = await verifyOtp({ phoneNumber, code });
             const userId = result?.userId || result?.data?.userId;
+            */
+
+            console.warn('Verify API connection disabled. Simulating success...');
+            const simulatedUserId = 'simulated-uuid-123-456';
 
             navigate('/set-password', {
                 state: {
-                    userId,
+                    userId: simulatedUserId,
                     firstName,
                     lastName,
                     email,

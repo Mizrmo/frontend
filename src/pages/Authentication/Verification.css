@@ -71,7 +71,8 @@
     text-align: center;
     color: #000000;
     margin-bottom: 20px;
-    margin-top: 40px;
+    margin-top: 60px;
+    /* Increased from 40px to prevent hiding under status bar */
 }
 
 .registration-subtitle {
