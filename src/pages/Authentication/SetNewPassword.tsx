@@ -9,7 +9,8 @@ import './SetPassword.css';
 function SetNewPassword() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { identifier, otp } = location.state || {};
+    // Get state passed from Verification screen
+    const { email, code } = (location.state as { email?: string, code?: string }) || {};
 
     const [formData, setFormData] = useState({
         password: '',
@@ -48,8 +49,8 @@ function SetNewPassword() {
         setIsLoading(true);
         try {
             await resetPassword({
-                identifier,
-                otp,
+                email: email || '',
+                code: code || '',
                 newPassword: formData.password
             });
             alert('Password reset successfully!');
