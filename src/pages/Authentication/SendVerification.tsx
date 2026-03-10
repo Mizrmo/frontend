@@ -18,8 +18,8 @@ const SendVerification = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            await forgotPassword({ identifier: contact });
-            navigate('/verify_otp', { state: { identifier: contact, isPasswordReset: true } });
+            await forgotPassword({ email: contact });
+            navigate('/verify_otp', { state: { email: contact, phoneNumber: contact, isPasswordReset: true } });
         } catch (error: any) {
             console.error('Password reset initiation failed:', error);
             alert('Failed to send OTP: ' + (error.response?.data?.message || error.message));

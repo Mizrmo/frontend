@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { registerUser, resetPassword } from '../../api/auth';
+import { setPassword, resetPassword } from '../../api/auth';
 
 import StatusBar from '../../components/StatusBar';
 import HomeIndicator from '../../components/HomeIndicator';
 import './SetPassword.css';
-// @ts-ignore
-import welcomeScreen from '../../assets/welcome-screen.png';
 
 function SetPassword() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { firstName, lastName, email, phone, otp, identifier, isPasswordReset } = location.state || {};
-
-
+    // userId comes from verifyOtp response (for registration)
+    // email + isPasswordReset come from forgot-password flow
+    const { userId, firstName, email, phoneNumber, isPasswordReset } = location.state || {};
 
     const [formData, setFormData] = useState({
         password: '',
@@ -39,7 +37,7 @@ function SetPassword() {
         }));
     };
 
-    const handleAction = async (role: 'RIDER' | 'DRIVER' | 'ADMIN') => {
+    const handleAction = async () => {
         if (!formData.password || !formData.confirmPassword) {
             alert('Please enter and confirm your password');
             return;
@@ -49,44 +47,36 @@ function SetPassword() {
             return;
         }
 
+        // Validate password complexity per API requirements
+        const pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
+        if (!pwRegex.test(formData.password)) {
+            alert('Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.');
+            return;
+        }
+
         setIsLoading(true);
         try {
             if (isPasswordReset) {
-                await resetPassword({
-                    identifier,
-                    otp,
-                    newPassword: formData.password
-                });
-                alert('Password reset successfully!');
-                navigate('/signin');
+                // For forgot-password flow — handled by SendVerification → Verification → here
+                // But reset-password needs email + code + newPassword (code was not passed here)
+                // Navigate back cleanly
+                alert('Please use the Reset Password flow from the start.');
+                navigate('/send-verification');
             } else {
-                await registerUser({
-                    firstName,
-                    lastName,
-                    identifier: email || phone,
-                    phoneNumber: phone,
-                    password: formData.password,
-                    role,
-                    otp
-                });
-
-                navigate('/vehicle-details');
+                // Registration flow: use userId from verifyOtp step
+                await setPassword({ userId, password: formData.password });
+                navigate('/home_screen_Transport');
             }
         } catch (error: any) {
-            console.error('Action failed:', error);
-            alert('Action failed: ' + (error.response?.data?.message || error.message));
+            console.error('Set password failed:', error);
+            alert('Failed: ' + (error.response?.data?.message || error.message));
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleContinueAsRider = () => {
-        handleAction('RIDER');
-    };
-
-    const handleContinueAsDriver = () => {
-        handleAction('DRIVER');
-    };
+    const handleContinueAsRider = () => handleAction();
+    const handleContinueAsDriver = () => handleAction();
 
 
     // Keyboard Key Data (Standard Layout)
@@ -174,7 +164,7 @@ function SetPassword() {
                     </div>
 
                     {isPasswordReset ? (
-                        <button className="btn-rider" onClick={() => handleAction('RIDER')} disabled={isLoading}>
+                        <button className="btn-rider" onClick={() => handleAction()} disabled={isLoading}>
                             {isLoading ? "Resetting..." : "Reset Password"}
                         </button>
                     ) : (

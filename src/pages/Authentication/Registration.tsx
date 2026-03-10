@@ -19,13 +19,19 @@ function Registration() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate email is provided (API requires it)
+        if (!formData.email.trim()) {
+            alert('Email is required to register.');
+            return;
+        }
+
         setIsLoading(true);
         try {
-            // Remove any spaces from phone number
+            // Remove spaces from phone number
             let sanitizedPhone = formData.phone.replace(/\s/g, '');
 
-            // Format to match Swagger example: "0327727402"
-            // If it starts with +233, we convert it to 0
+            // Normalize to Ghana local format: "0551234567"
             let finalPhone = sanitizedPhone;
             if (finalPhone.startsWith('+233')) {
                 finalPhone = '0' + finalPhone.substring(4);
@@ -38,33 +44,27 @@ function Registration() {
             const firstName = nameParts[0] || '';
             const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : firstName;
 
-            // Format the request body exactly as Swagger expects
-            const requestBody: any = {
-                firstName: firstName,
-                lastName: lastName,
+            // Send exactly what RegisterDto expects
+            await initiateRegistration({
+                firstName,
+                lastName,
+                email: formData.email.trim(),
                 phoneNumber: finalPhone,
                 roleIntent: 'RIDER'
-            };
+            });
 
-            // Only add email if it's actually provided
-            if (formData.email.trim()) {
-                requestBody.email = formData.email.trim();
-            }
-
-            await initiateRegistration(requestBody);
-
+            // Navigate to OTP screen passing phone & email for subsequent steps
             navigate('/verify_otp', {
                 state: {
                     firstName,
                     lastName,
                     email: formData.email.trim(),
-                    phone: finalPhone,
-                    identifier: finalPhone
+                    phoneNumber: finalPhone
                 }
             });
 
         } catch (error: any) {
-            console.error('Initiation failed:', error);
+            console.error('Registration initiation failed:', error);
             const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message;
             alert('Failed to start registration: ' + errorMsg);
 

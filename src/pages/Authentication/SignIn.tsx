@@ -25,9 +25,9 @@ const SignIn = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await login({ identifier: formData.identifier, password: formData.password });
-            if (response.token) {
-                localStorage.setItem('token', response.token);
+            const response = await login({ emailOrPhone: formData.identifier, password: formData.password });
+            if (response.token || response.accessToken) {
+                localStorage.setItem('token', response.token || response.accessToken);
             }
             navigate('/home_screen_Transport');
         } catch (error: any) {

@@ -2,37 +2,30 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import StatusBar from '../../components/StatusBar';
 import HomeIndicator from '../../components/HomeIndicator';
-import { initiateRegistration, forgotPassword } from '../../api/auth';
+import { verifyOtp, resendOtp } from '../../api/auth';
 import './Verification.css';
-// @ts-ignore
-import welcomeScreen from '../../assets/welcome-screen.png';
 
 
 function Verification() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { firstName, lastName, email, phone, identifier, isPasswordReset } = location.state || {};
+    // State from Registration: { firstName, lastName, email, phoneNumber }
+    // State from SendVerification (forgot password): { email, isPasswordReset: true }
+    const { firstName, lastName, email, phoneNumber, isPasswordReset } = location.state || {};
 
-    const [otp, setOtp] = useState(['', '', '', '', '']);
+    const [otp, setOtp] = useState(['', '', '', '', '', '']); // 6-digit
     const [isLoading, setIsLoading] = useState(false);
     const [isResending, setIsResending] = useState(false);
 
     const handleResend = async () => {
         setIsResending(true);
         try {
-            if (isPasswordReset) {
-                await forgotPassword({ identifier });
-            } else {
-                await initiateRegistration({
-                    firstName,
-                    lastName: lastName || firstName,
-                    email: email || undefined,
-                    phoneNumber: phone,
-                    roleIntent: 'RIDER'
-                });
-            }
+            await resendOtp({
+                phoneNumber: phoneNumber,
+                type: isPasswordReset ? 'PASSWORD_RESET' : 'PHONE_VERIFICATION'
+            });
             alert('OTP resent successfully!');
-            setOtp(['', '', '', '', '']);
+            setOtp(['', '', '', '', '', '']);
         } catch (error: any) {
             console.error('Resend failed:', error);
             alert('Failed to resend OTP: ' + (error.response?.data?.message || error.message));
@@ -40,7 +33,6 @@ function Verification() {
             setIsResending(false);
         }
     };
-
 
     // Custom Keypad Logic
     const handleKeyClick = (val: string) => {
@@ -53,7 +45,6 @@ function Verification() {
     };
 
     const handleDelete = () => {
-        // Find last non-empty index
         const lastIndex = [...otp].reverse().findIndex(digit => digit !== '');
         if (lastIndex !== -1) {
             const actualIndex = otp.length - 1 - lastIndex;
@@ -63,25 +54,33 @@ function Verification() {
         }
     };
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
+        const code = otp.join('');
+        if (code.length < 6) return;
+
         setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            const otpCode = otp.join('');
+        try {
+            // POST /auth/verify-otp → returns { userId, ... }
+            const result = await verifyOtp({ phoneNumber, code });
+            const userId = result?.userId || result?.data?.userId;
+
             navigate('/set-password', {
                 state: {
+                    userId,
                     firstName,
                     lastName,
                     email,
-                    phone,
-                    otp: otpCode,
-                    identifier,
+                    phoneNumber,
                     isPasswordReset
                 }
             });
-        }, 1000);
+        } catch (error: any) {
+            console.error('OTP verification failed:', error);
+            alert('Verification failed: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setIsLoading(false);
+        }
     };
-
 
 
     const keys = [
@@ -135,7 +134,7 @@ function Verification() {
                 <button
                     className="btn-create-account"
                     onClick={handleVerify}
-                    disabled={isLoading || otp.join('').length < 5}
+                    disabled={isLoading || otp.join('').length < 6}
                 >
                     {isLoading ? "Verifying..." : "Verify"}
                 </button>
