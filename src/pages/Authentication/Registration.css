@@ -1,0 +1,417 @@
+.registration-screen,
+.signin-screen,
+.send-verification-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF !important;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.registration-screen .status-bar-wrapper {
+    width: 100%;
+    height: 94px;
+    background: #FFFFFF !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.registration-screen .nav-actions-row {
+    margin-top: 10px;
+    /* Pull it up to sit closely with status bar */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+.registration-screen .back-text-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    /* Slightly darker than light grey but not black */
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+.registration-screen .back-text-btn:active {
+    opacity: 0.6;
+}
+
+.registration-screen .registration-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.registration-screen .registration-frame-top {
+    width: 362px;
+    height: 506px;
+    margin: 30px 0 0 15px;
+    /* 94px (Status Bar) + 30px = 124px Top */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 1;
+}
+
+
+.registration-screen .registration-frame-bottom {
+    width: 360px;
+    height: 197px;
+    margin: 10px 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.registration-screen .registration-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #1A1A1A;
+    text-align: left;
+    line-height: 30px;
+    letter-spacing: 0%;
+    margin-bottom: 20px;
+    margin-top: 0;
+    width: 360px;
+}
+
+
+
+.registration-screen .dob-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #414141;
+    margin-top: auto;
+    margin-left: 15px;
+    margin-bottom: 30px;
+    height: 18px;
+}
+
+
+.registration-screen .dob-label span {
+    color: #FF0000;
+    margin-left: 2px;
+}
+
+
+.input-field-group,
+.input-field-container {
+    margin-bottom: 10px;
+}
+
+.registration-screen .input-field-group input,
+.registration-screen .input-wrapper input {
+    width: 362px;
+    height: 45px;
+    padding: 0 20px;
+    border: 1px solid #DDDDDD;
+    border-radius: 42px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    background: #FFFFFF;
+    color: #1A1A1A;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.registration-screen .input-field-group input::placeholder {
+    color: #DDDDDD;
+    opacity: 1;
+    font-weight: 400;
+}
+
+
+
+.registration-screen .phone-input-group {
+    display: flex;
+    align-items: center;
+    width: 362px;
+    height: 45px;
+    background: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 42px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    justify-content: flex-start;
+}
+
+.registration-screen .phone-input-group:focus-within {
+    border-color: #004DA1;
+}
+
+.registration-screen .phone-input-group input {
+    border: none !important;
+    background: transparent !important;
+    padding-left: 12px;
+    box-shadow: none !important;
+    width: 100%;
+    height: 24px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+}
+
+
+.country-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.divider-vertical {
+    width: 1px;
+    height: 24px;
+    background: #E2E8F0;
+    margin: 0 12px;
+}
+
+.country-code {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 30px;
+    letter-spacing: 0;
+    color: #262626;
+}
+
+.registration-screen .terms-checkbox {
+    display: flex;
+    gap: 12px;
+    margin: 5px 0;
+    /* Reduced to match Figma tight spacing */
+    align-items: flex-start;
+}
+
+
+.checkbox-wrapper {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.checkbox-wrapper input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.registration-screen .custom-checkbox-round {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #1A1A1A;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    pointer-events: none;
+}
+
+.registration-screen .custom-checkbox-round svg {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+
+.registration-screen .checkbox-wrapper input:checked+.custom-checkbox-round {
+    background: #fff;
+    border-color: #1A1A1A;
+}
+
+.registration-screen .checkbox-wrapper input:checked+.custom-checkbox-round svg {
+    opacity: 1;
+}
+
+
+
+.registration-screen .terms-checkbox label {
+    width: 328px;
+    height: 40px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: #B8B8B8;
+    /* Lighter grey for the non-bold text */
+    cursor: pointer;
+    flex: 1;
+}
+
+
+.registration-screen .terms-checkbox label span {
+    color: #414141;
+    font-weight: 500;
+}
+
+.btn-primary,
+.signin-btn,
+.send-otp-btn {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Dimensions and behavior controlled by index.css */
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    font-synthesis: none;
+    line-height: 16px;
+    letter-spacing: 0;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    margin-top: 0;
+    /* Rely on frame gap for consistency */
+}
+
+
+.btn-primary:active,
+.signin-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+.registration-screen .divider {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    /* Space from the button */
+    margin-bottom: 10px;
+    gap: 16px;
+    width: 360px;
+}
+
+
+.registration-screen .divider-line {
+    flex: 1;
+    height: 1px;
+    background: #DDDDDD;
+}
+
+.registration-screen .divider-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #A0A0A0;
+}
+
+
+.registration-screen .social-signup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 360px;
+}
+
+.registration-screen .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #D0D0D0 !important;
+    border-radius: 39px !important;
+    background: #FFFFFF;
+    width: 360px;
+    height: 45px;
+    margin: 0;
+    gap: 8px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.registration-screen .social-btn span {
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    line-height: 30px !important;
+    color: #1A1A1A !important;
+    text-align: center;
+}
+
+
+.social-btn:active {
+    background: #F8FAFC;
+    transform: scale(0.98);
+}
+
+.registration-screen .registration-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-bottom: 30px;
+    width: 360px;
+}
+
+
+.registration-screen .registration-footer p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #1A1A1A;
+}
+
+.registration-screen .signin-link {
+    color: #1A1A1A;
+    font-weight: 400;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+
+.icon-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.forgot-password {
+    background: transparent;
+    border: none;
+    color: #004DA1;
+    font-weight: 600;
+    font-size: 14px;
+    float: right;
+    margin-top: -8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}

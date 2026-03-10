@@ -1,0 +1,164 @@
+/* ─── Screen Shell ───────────────────────────────────── */
+.send-verification-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ─── Status Bar ─────────────────────────────────────── */
+.sv-status-bar {
+    width: 100%;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+/* ─── Back Header ────────────────────────────────────── */
+.sv-header {
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.sv-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1A1A1A;
+    padding: 0;
+}
+
+.sv-back-btn:active {
+    opacity: 0.6;
+}
+
+/* ─── Scrollable Content ─────────────────────────────── */
+.sv-content {
+    flex: 1;
+    padding: 30px 15px 0 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+.sv-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* ─── Title ──────────────────────────────────────────── */
+.sv-title {
+    font-family: 'Montserrat', sans-serif;
+    width: 364px;
+    height: 30px !important;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0%;
+    color: #000000;
+    text-align: left;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* ─── Form ───────────────────────────────────────────── */
+.sv-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ─── Input Fields ───────────────────────────────────── */
+.sv-input-wrap {
+    position: relative;
+    width: 362px;
+    height: 45px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-sizing: border-box;
+    /* Calculated margin to land at TOP: 214px */
+    /* 124px (header end) + 30px (title) = 154px. 214 - 154 = 60px */
+    margin: 60px 0 0 1px;
+    /* 1px left for alignment with left: 16px since content is 15px */
+}
+
+.sv-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #1A1A1A;
+    min-width: 0;
+}
+
+.sv-input::placeholder {
+    color: #ABABAB;
+    font-size: 14px;
+}
+
+/* ─── Input Icons ────────────────────────────────────── */
+.sv-input-icons {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* ─── Sign In Button ─────────────────────────────────── */
+.sv-submit-btn {
+    width: 362px;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    /* Calculated margin to land at TOP: 748px */
+    /* Dynamic bottom sticky but using spec'd height */
+    position: absolute;
+    top: 748px;
+    left: 16px;
+    padding: 13px 18px;
+}
+
+.sv-submit-btn:hover {
+    background: #004494;
+}
+
+.sv-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.sv-submit-btn:active {
+    transform: scale(0.98);
+}
+
+Riverside

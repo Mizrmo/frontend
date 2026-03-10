@@ -1,0 +1,496 @@
+.dow-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ── Map Header ── */
+.dow-map-container {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.dow-map-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.dow-circle-btn {
+    width: 44px;
+    height: 44px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: #1A1A1A;
+}
+
+.dow-notify-dot {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    background: #EA4335;
+    border: 1.5px solid #FFFFFF;
+    border-radius: 50%;
+}
+
+/* ── Map Markers ── */
+.dow-route-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.dow-driver-marker {
+    position: absolute;
+    z-index: 6;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.dow-pickup-marker {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.dow-pickup-ring {
+    position: absolute;
+    border-radius: 50%;
+    background: #FFCC00;
+}
+
+.ring-1 {
+    width: 180px;
+    height: 180px;
+    opacity: 0.05;
+}
+
+.ring-2 {
+    width: 110px;
+    height: 110px;
+    opacity: 0.08;
+}
+
+.ring-3 {
+    width: 60px;
+    height: 60px;
+    opacity: 0.12;
+}
+
+.ring-4 {
+    width: 30px;
+    height: 30px;
+    opacity: 0.2;
+}
+
+.dow-pickup-dot {
+    width: 14px;
+    height: 14px;
+    background: #FFCC00;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
+    position: relative;
+    z-index: 10;
+}
+
+/* ── Compact Premium Card ── */
+.dow-compact-card {
+    height: 100px !important;
+    padding: 12px 16px !important;
+    border-radius: 16px !important;
+    margin-top: 4px;
+}
+
+.dow-compact-card .premium-card-number {
+    font-size: 16px !important;
+    letter-spacing: 1px !important;
+}
+
+.dow-compact-card .value {
+    font-size: 11px !important;
+}
+
+.dow-compact-card .label {
+    font-size: 8px !important;
+}
+
+.dow-compact-card .card-brand-logo-mtn {
+    height: 22px !important;
+}
+
+.dow-compact-card .card-status {
+    padding: 2px 8px !important;
+}
+
+.dow-compact-card .status-text {
+    font-size: 9px !important;
+}
+
+/* ── Bottom Sheet ── */
+.dow-bottom-sheet {
+    background: #FFFFFF;
+    border-radius: 32px 32px 0 0;
+    padding: 16px 20px 24px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 20;
+}
+
+.dow-drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #E2E8F0;
+    border-radius: 2px;
+    margin: 0 auto 20px;
+}
+
+.dow-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dow-arrival-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.dow-safety-btn {
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0;
+    text-align: center;
+    color: #FFCC00;
+    cursor: pointer;
+}
+
+.dow-divider {
+    height: 1px;
+    background: #F1F5F9;
+    margin: 0 -20px 20px;
+}
+
+.dow-driver-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dow-driver-main {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.dow-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dow-driver-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.dow-driver-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+.dow-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+
+.dow-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.dow-action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.dow-action-btn.call {
+    background: #FFFFFF;
+    border: 1px solid #FFCC00;
+}
+
+.dow-action-btn.chat {
+    background: #EFF6FF;
+}
+
+/* ── Payment Section ── */
+.dow-payment-section {
+    margin-bottom: 24px;
+}
+
+.dow-payment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.dow-pay-label {
+    font-size: 15px;
+    color: #94A3B8;
+}
+
+.dow-pay-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.dow-cancel-btn {
+    width: 100%;
+    height: 54px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 27px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dow-cancel-btn:hover {
+    background: #004494;
+}
+
+/* ── Safety Centre Modal ── */
+.sc-modal-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sc-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.safety_centre {
+    position: relative;
+    width: 348px;
+    height: 275px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.sc-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 10;
+}
+
+.sc-body {
+    display: flex;
+    flex-direction: column;
+    padding: 0 47px;
+}
+
+.sc-item {
+    display: flex;
+    align-items: center;
+    padding: 24px 0;
+    cursor: pointer;
+    gap: 16px;
+}
+
+.sc-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sc-text {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0;
+    text-align: center;
+    color: #1A1A1A;
+}
+
+.sc-divider {
+    height: 1px;
+    background: #F1F5F9;
+    width: 100%;
+}
+
+/* ── Ride Ended Modal ── */
+.re-modal-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.re-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.ride-ended-modal {
+    position: absolute;
+    width: 361px;
+    height: 355px;
+    top: 248px;
+    left: 16px;
+    background: #FFFFFF;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    align-items: center;
+    text-align: center;
+    z-index: 2001;
+    overflow: hidden;
+}
+
+.re-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.re-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.re-success-icon {
+    width: 120px;
+    height: 120px;
+    background: #E5E7EB;
+    border-radius: 50%;
+    margin-bottom: 24px;
+}
+
+.re-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.re-subtitle {
+    font-size: 15px;
+    color: #64748B;
+    line-height: 1.5;
+    margin-bottom: 32px;
+}
+
+.re-payment-btn {
+    width: 100%;
+    height: 56px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: auto;
+}

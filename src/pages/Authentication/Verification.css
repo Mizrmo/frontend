@@ -1,0 +1,221 @@
+.verification-page {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF !important;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-bar-wrapper {
+    width: 100%;
+    height: 94px;
+    background: #FFFFFF !important;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+}
+
+.nav-actions-row {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+
+.back-text-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+.back-text-btn:active {
+    background: #E2E8F0;
+    transform: scale(0.95);
+}
+
+.verification-content-actual {
+    flex: 1;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}
+
+
+/* Illustration removed to match latest design */
+
+
+.verification-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0%;
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.registration-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #A0A0A0;
+    text-align: center;
+    margin-bottom: 40px;
+    line-height: normal;
+}
+
+
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.otp-input-mock {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #1A1A1A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    background: transparent;
+    color: #000000;
+    transition: all 0.2s;
+}
+
+
+.otp-input-mock.filled {
+    border-color: #0056B3;
+    border-width: 2px;
+}
+
+
+.resend-section {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.resend-section p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #414141;
+}
+
+.resend-link-actual {
+    font-weight: 400;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.resend-link-actual.disabled {
+    color: #A0A0A0;
+    cursor: not-allowed;
+}
+
+
+.btn-create-account {
+    /* Dimensions and behavior controlled by index.css */
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+
+.btn-create-account:disabled {
+    background: #0056B3;
+    /* Stay blue even when disabled */
+    cursor: default;
+    box-shadow: none;
+    opacity: 1;
+}
+
+.btn-create-account:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* Custom Numeric Keyboard - iOS Style */
+.custom-keyboard {
+    background-color: #D1D5DB;
+    /* iOS style light grey */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 6px;
+    width: 100%;
+    margin-top: auto;
+    box-sizing: border-box;
+}
+
+.key-btn {
+    height: 46px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.key-btn:active {
+    background: #E5E7EB;
+}
+
+.key-btn .key-val {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000000;
+}
+
+.key-btn .key-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #000000;
+    margin-top: -2px;
+}
+
+.delete-btn {
+    background: transparent;
+    box-shadow: none;
+}
+
+.delete-btn svg {
+    color: #000000;
+}
+
+.no-scroll {
+    overflow: hidden;
+    height: 852px;
+}

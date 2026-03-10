@@ -1,0 +1,266 @@
+/* ─── Screen Shell ───────────────────────────────────── */
+.signin-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ─── Status Bar ─────────────────────────────────────── */
+.si-status-bar {
+    width: 100%;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+/* ─── Back Header ────────────────────────────────────── */
+.si-header {
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.si-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1A1A1A;
+    padding: 0;
+}
+
+.si-back-btn:active {
+    opacity: 0.6;
+}
+
+/* ─── Scrollable Content ─────────────────────────────── */
+.si-content {
+    flex: 1;
+    padding: 30px 15px 0 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+.si-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* ─── Title ──────────────────────────────────────────── */
+.si-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #1A1A1A;
+    line-height: 30px;
+    letter-spacing: 0;
+    text-align: left;
+    margin: 0;
+    width: 364px;
+    min-height: 60px;
+    box-sizing: border-box;
+}
+
+/* ─── Form ───────────────────────────────────────────── */
+.si-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Title bottom ~184px, form top 256px → 72px gap */
+    margin-top: 72px;
+}
+
+/* ─── Input Fields ───────────────────────────────────── */
+.si-input-wrap {
+    position: relative;
+    width: 362px;
+    height: 45px;
+    background: #FFFFFF;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    box-sizing: border-box;
+    margin-bottom: 41px;
+    border: 1px solid #E2E8F0;
+}
+
+.si-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #1A1A1A;
+    min-width: 0;
+}
+
+.si-input::placeholder {
+    color: #ABABAB;
+    font-size: 14px;
+}
+
+/* ─── Input Icons ────────────────────────────────────── */
+.si-input-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.si-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.si-icon-divider {
+    width: 1px;
+    height: 16px;
+    background: #D0D0D0;
+}
+
+/* ─── Forget Password ────────────────────────────────── */
+.si-forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+    margin-top: -8px;
+}
+
+.si-forgot-btn {
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #E53E3E;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* ─── Sign In Button ─────────────────────────────────── */
+.si-submit-btn {
+    width: 100%;
+    height: 50px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 24px;
+}
+
+.si-submit-btn:hover {
+    background: #004494;
+}
+
+.si-submit-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ─── Divider ────────────────────────────────────────── */
+.si-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.si-divider-line {
+    flex: 1;
+    height: 1px;
+    background: #E2E8F0;
+}
+
+.si-divider-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #ABABAB;
+}
+
+/* ─── Social Buttons ─────────────────────────────────── */
+.si-social-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 0;
+    align-items: center;
+}
+
+.si-social-btn {
+    width: 360px;
+    height: 45px;
+    background: #FFFFFF;
+    border: 1.5px solid #D0D0D0;
+    border-radius: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #1A1A1A;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.si-social-btn:hover {
+    background: #F8FAFC;
+}
+
+/* ─── Sign Up Footer ─────────────────────────────────── */
+.si-signup-footer {
+    text-align: center;
+    margin-top: 10px;
+    padding-bottom: 30px;
+}
+
+.si-signup-footer p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.si-signup-link {
+    color: #1A1A1A;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.si-signup-link:hover {
+    text-decoration: underline;
+}

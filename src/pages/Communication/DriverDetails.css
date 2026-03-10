@@ -1,0 +1,117 @@
+.driver-details-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.status-bar-wrapper {
+    width: 393px;
+    height: 94px;
+    background: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 56px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.back-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.page-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.driver-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px;
+    gap: 24px;
+}
+
+.driver-avatar-circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.driver-info-text {
+    text-align: center;
+}
+
+.driver-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0 0 4px;
+}
+
+.driver-meta {
+    font-size: 14px;
+    color: #94A3B8;
+}
+
+.details-card {
+    width: 100%;
+    background: #F8FAFC;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-label {
+    font-size: 14px;
+    color: #94A3B8;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.confirm-ride-btn {
+    width: 100%;
+    height: 56px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: auto;
+}

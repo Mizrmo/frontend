@@ -1,0 +1,63 @@
+.success-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.status-bar-wrapper {
+    width: 393px;
+    height: 94px;
+    flex-shrink: 0;
+    background: #FFFFFF;
+}
+
+.success-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    text-align: center;
+}
+
+.success-icon-wrap {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0056B3, #0078FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 32px rgba(0, 86, 179, 0.3);
+}
+
+.success-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 32px 0 16px;
+    letter-spacing: -0.5px;
+}
+
+.success-message {
+    font-size: 15px;
+    color: #64748B;
+    line-height: 1.6;
+    margin-bottom: 48px;
+}
+
+.get-started-btn {
+    /* Dimensions and behavior controlled by index.css */
+    margin-top: auto;
+    margin-bottom: 60px;
+}

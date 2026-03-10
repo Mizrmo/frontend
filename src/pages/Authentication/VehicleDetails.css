@@ -1,0 +1,360 @@
+.vehicle-details-page {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    overflow-x: hidden;
+    user-select: none;
+    /* Prevent accidental text drag */
+}
+
+.vehicle-details-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+
+.vehicle-details-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.vehicle-details-content {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.status-bar-wrapper {
+    width: 393px;
+    height: 44px;
+    background: #FFFFFF;
+}
+
+/* Header Area (Status Bar 44px + Navigation 50px = 94px) */
+.page-header {
+    width: 393px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.page-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1A1A1A;
+    z-index: 10;
+}
+
+.nav-btn.back-btn svg {
+    margin-left: -6px;
+}
+
+.nav-btn.skip-btn {
+    font-weight: 400;
+}
+
+/* Form Styles */
+.driver-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Updated to match Figma gap */
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 361px;
+    /* 393 - 16 - 16 = 361 */
+}
+
+Riverside .form-group.gap-3 {
+    gap: 3px;
+    height: 64px;
+}
+
+.form-group.gap-10 {
+    gap: 10px;
+}
+
+
+
+.form-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555555;
+    line-height: normal;
+}
+
+
+
+.form-label .required {
+    color: #E53E3E;
+    margin-left: 2px;
+}
+
+.input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-icon input,
+.driver-form input[type="text"] {
+    width: 100%;
+    /* Use container width (361px) */
+    height: 45px;
+    padding: 0 20px;
+    border: 1px solid #E2E8F0;
+    border-radius: 24px;
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+    background: #FFFFFF;
+    box-sizing: border-box;
+}
+
+.picker-input-field {
+    width: 100%;
+    /* Use container width */
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border: 1px solid #E2E8F0;
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.picker-placeholder {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #D0D0D0;
+}
+
+.picker-placeholder.has-value {
+    color: #1A1A1A;
+}
+
+.picker-icon {
+    display: flex;
+    align-items: center;
+    color: #D0D0D0;
+}
+
+.input-with-icon input {
+    padding-right: 45px;
+}
+
+.input-icon-right {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+}
+
+/* Licence Section Frame (427319647) */
+.licence-section-frame {
+    width: calc(100% + 32px);
+    /* Spans full 393px viewport */
+    margin-left: -16px;
+    /* Offset parent padding */
+    height: auto;
+    /* Dynamic but following internal gaps */
+    padding: 24px 16px;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.form-group.width-173 {
+    width: 173px;
+    height: 64px;
+}
+
+.picker-input-field.width-173 {
+    width: 173px;
+    height: 45px;
+    padding: 10px;
+    border: 1px solid #D0D0D0;
+    border-radius: 42px;
+}
+
+/* Gender Selection */
+.gender-group {
+    display: flex;
+    gap: 25px;
+    margin-top: 4px;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.radio-circle {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.radio-item.active .radio-circle {
+    border-color: #0056B3;
+}
+
+.radio-inner {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border-radius: 50%;
+}
+
+.radio-item.active .radio-inner {
+    background: #0056B3;
+}
+
+.radio-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #555555;
+    font-weight: 400;
+}
+
+/* Two Column Row */
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Upload Container */
+.upload-container {
+    width: 100%;
+    max-width: 361px;
+    height: 140px;
+    border: 1px dashed #94A3B3;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    padding: 20px 16px;
+    gap: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upload-container:hover {
+    background: #F1F5F9;
+}
+
+.upload-icon-circle {
+    width: 44px;
+    height: 44px;
+    background: #F0F5FF;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+    gap: 10px;
+    box-sizing: border-box;
+    color: #4489F7;
+    /* Matching the blue in the crop */
+}
+
+.upload-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #0052B4;
+    font-weight: 500;
+    text-align: center;
+}
+
+.upload-hint {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    color: #94A3B8;
+    text-align: center;
+    opacity: 0.7;
+}
+
+/* Footer Button */
+.form-footer {
+    width: 100%;
+    background: #FFFFFF;
+    padding: 16px 16px 4px;
+    box-sizing: border-box;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+    /* Softer, wider shadow */
+    z-index: 50;
+}
+
+
+.btn-register {
+    width: 100%;
+    height: 48px;
+    background: #0052B4;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Global input placeholder tweak */
+.vehicle-details-page input::placeholder {
+    color: #CBD5E1;
+}

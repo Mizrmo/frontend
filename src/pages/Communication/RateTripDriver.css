@@ -1,0 +1,218 @@
+.rtd-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #EAEAEA;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+.rtd-status-bar-wrapper {
+    width: 393px;
+    height: 94px;
+    background: #EAEAEA;
+    flex-shrink: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.rtd-header {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    width: 100%;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.rtd-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #1A1A1A;
+    cursor: pointer;
+}
+
+.rtd-scroll {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 94px 24px 24px;
+    box-sizing: border-box;
+}
+
+.rtd-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.rtd-driver-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.rtd-avatar-wrapper {
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.rtd-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rtd-driver-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0 0 4px;
+}
+
+.rtd-trips {
+    font-size: 14px;
+    color: #64748B;
+    margin: 0;
+}
+
+.rtd-rating-box {
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rtd-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0 0 8px;
+}
+
+.rtd-subtitle {
+    font-size: 15px;
+    color: #94A3B8;
+    margin: 0 0 28px;
+}
+
+.rtd-star-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+}
+
+.rtd-star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px;
+}
+
+.rtd-star-btn:hover {
+    transform: scale(1.1);
+}
+
+.rtd-star-btn.active {
+    transform: scale(1.15) translateY(-2px);
+    filter: drop-shadow(0 4px 8px rgba(255, 204, 0, 0.4));
+}
+
+.rtd-feedback-section {
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.rtd-textarea {
+    width: 100%;
+    height: 110px;
+    background: #F8F9FD;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #1A1A1A;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.rtd-textarea::placeholder {
+    color: #A3A3A3;
+}
+
+.rtd-textarea:focus {
+    border-color: #0056B3;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+}
+
+.rtd-submit-btn {
+    width: 100%;
+    height: 54px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 27px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+}
+
+.rtd-submit-btn:hover {
+    background: #004494;
+}
+
+.rtd-submit-btn:active {
+    transform: scale(0.98);
+}
+
+.rtd-skip-btn {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rtd-skip-btn:hover {
+    color: #1A1A1A;
+}

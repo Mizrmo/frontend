@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&display=swap');
+
+.brd-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+.brd-status-bar-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 393px;
+    height: 44px;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    z-index: 1000;
+}
+
+.nav-actions-row {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    width: 100%;
+    padding: 0 16px;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    z-index: 1001;
+}
+
+.back-text-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #414141;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.brd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 20px 13px;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    margin-top: 94px;
+}
+
+.brd-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.brd-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: #5A5A5A;
+    margin: 0;
+    line-height: 30px;
+}
+
+.brd-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #A0AEC0;
+    margin: 0;
+    font-weight: 400;
+}
+
+.brd-refresh-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #EBF8FF;
+    /* Light blue wash */
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.brd-refresh-btn:active {
+    transform: scale(0.9);
+}
+
+/* ── Content ── */
+.brd-scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.brd-scroll-content::-webkit-scrollbar {
+    display: none;
+}
+
+.brd-section {
+    padding: 24px 20px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+.brd-section:last-of-type {
+    border-bottom: none;
+}
+
+.brd-section-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #A0AEC0;
+    margin: 0 0 20px 0;
+}
+
+/* Location Block */
+.brd-location-block {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    position: relative;
+    padding-left: 2px;
+}
+
+.brd-loc-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+}
+
+.brd-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brd-dot.blue {
+    background: #EBF8FF;
+    border: 4px solid #4299E1;
+}
+
+.brd-dot.yellow {
+    background: #FFCC00;
+    width: 16px;
+    height: 16px;
+}
+
+.brd-loc-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.brd-loc-title {
+    font-size: 19px;
+    font-weight: 500;
+    color: #414141;
+}
+
+.brd-loc-sub {
+    font-size: 14px;
+    color: #A0AEC0;
+}
+
+.brd-dist {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #718096;
+    align-self: flex-start;
+    margin-top: 2px;
+}
+
+/* Driver Card */
+.brd-driver-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brd-driver-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brd-avatar {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.brd-driver-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+}
+
+.brd-driver-name {
+    font-size: 19px;
+    font-weight: 500;
+    color: #414141;
+}
+
+.brd-driver-meta {
+    font-size: 13px;
+    color: #A0AEC0;
+}
+
+.brd-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #414141;
+    margin-top: 2px;
+}
+
+.brd-car-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #414141;
+    margin-top: 2px;
+}
+
+.brd-driver-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.brd-action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.brd-action-btn.call {
+    background: #FFFFFF;
+    border: 1.5px solid #FFCC00;
+}
+
+.brd-action-btn.chat {
+    background: #EBF8FF;
+}
+
+/* Payment Row */
+.brd-payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4px;
+}
+
+.brd-pay-label {
+    font-size: 16px;
+    font-weight: 400;
+    color: #A0AEC0;
+}
+
+.brd-pay-value {
+    font-size: 18px;
+    font-weight: 500;
+    color: #414141;
+}
+
+/* Bottom Nav Bar Synchronization */
+.ut-tab-bar {
+    position: absolute;
+    width: 393px;
+    height: 86px;
+    bottom: 0;
+    left: 0;
+    background: #F2F2F2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 34px;
+    padding: 11px 0 25px;
+    /* Added padding for home indicator */
+    flex-shrink: 0;
+    box-sizing: border-box;
+    z-index: 2000;
+    border-top: 1px solid #E2E8F0;
+}
+
+.ut-nav-btn {
+    width: 66px;
+    height: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #1A1A1A;
+    padding: 0;
+}
+
+.ut-nav-btn.active {
+    color: #0056B3;
+}
+
+.tab-icon-wrap {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

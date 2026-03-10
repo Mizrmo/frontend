@@ -5,6 +5,7 @@ export interface InitiateRequest {
     lastName: string;
     email?: string;
     phoneNumber: string;
+    roleIntent: 'RIDER' | 'DRIVER';
 }
 
 export interface RegisterRequest {
