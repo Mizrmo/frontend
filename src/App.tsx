@@ -24,7 +24,22 @@ import RateTripDriver from './pages/Communication/RateTripDriver'
 import Chat from './pages/Communication/Chat'
 import Notifications from './pages/Communication/Notifications'
 import AccountSettings from './pages/AccountProfile/AccountSettings'
+import UserDocuments from './pages/AccountProfile/UserDocuments'
+import ContactInformation from './pages/AccountProfile/ContactInformation'
+import GhanaCard from './pages/AccountProfile/GhanaCard'
+import HelpSupport from './pages/AccountProfile/HelpSupport'
 import VehicleDetails from './pages/Authentication/VehicleDetails'
+import DriverDashboard from './pages/DriverDashboard/DriverDashboard'
+import DriverHomeTransport from './pages/DriverDashboard/DriverHomeTransport'
+import AdvertiseRide from './pages/DriverDashboard/AdvertiseRide'
+import DriverSearchLocation from './pages/DriverDashboard/DriverSearchLocation'
+import RideAdvertisedConfirmation from './pages/DriverDashboard/RideAdvertisedConfirmation'
+import IncomingRequest from './pages/DriverDashboard/IncomingRequest'
+import DriverStartRide from './pages/DriverDashboard/DriverStartRide'
+import DriverUpcomingTrips from './pages/DriverDashboard/DriverUpcomingTrips'
+import DriverRideDetails from './pages/DriverDashboard/DriverRideDetails'
+import DriverRateRider from './pages/DriverDashboard/DriverRateRider'
+import DriverFavoriteRides from './pages/DriverDashboard/DriverFavoriteRides'
 
 function App() {
     return (
@@ -57,6 +72,21 @@ function App() {
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/account-settings" element={<AccountSettings />} />
+                <Route path="/documents" element={<UserDocuments />} />
+                <Route path="/contact-info" element={<ContactInformation />} />
+                <Route path="/ghana-card" element={<GhanaCard />} />
+                <Route path="/help-support" element={<HelpSupport />} />
+                <Route path="/driver-dashboard" element={<DriverDashboard />} />
+                <Route path="/driver-home" element={<DriverHomeTransport />} />
+                <Route path="/advertise_ride" element={<AdvertiseRide />} />
+                <Route path="/driver-search-location" element={<DriverSearchLocation />} />
+                <Route path="/ride_advertised_confirmation" element={<RideAdvertisedConfirmation />} />
+                <Route path="/incoming-request" element={<IncomingRequest />} />
+                <Route path="/driver_start_ride" element={<DriverStartRide />} />
+                <Route path="/driver_upcoming_trips" element={<DriverUpcomingTrips />} />
+                <Route path="/driver-ride-details" element={<DriverRideDetails />} />
+                <Route path="/rate_trip_rider" element={<DriverRateRider />} />
+                <Route path="/driver-favorite-rides" element={<DriverFavoriteRides />} />
                 <Route path="*" element={<Navigate to="/onboarding" replace />} />
             </Routes>
         </Router>

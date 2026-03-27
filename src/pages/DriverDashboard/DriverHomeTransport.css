@@ -1,0 +1,177 @@
+.home-screen-transport {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Map Asset Container */
+.hst-map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    background: #FFFFFF;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.hst-map-image {
+    position: absolute;
+    top: 0;
+    left: -11px;
+    width: 414.18px;
+    height: 852px; /* Set to screen height to ensure clip at top is correct */
+    opacity: 1;
+    object-fit: cover;
+}
+
+/* Central Track Indicator with Pulse */
+.hst-track-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.hst-car-pin {
+    width: 24.5px;
+    height: 49.0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 5;
+    /* transition: transform 0.3s ease; No rotation needed here unless specified */
+}
+
+.hst-car-track-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.pulse-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 204, 0, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: hst-ripple 2s infinite cubic-bezier(0, 0, 0.2, 1);
+}
+
+.pulse-ripple.two {
+    animation-delay: 1s;
+}
+
+@keyframes hst-ripple {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* Top Area Controls (Status Bar Area) */
+.hst-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 393px;
+    height: 94px;
+    z-index: 100;
+    background: transparent !important;
+    box-sizing: border-box;
+}
+
+.status-bar-wrapper {
+    width: 393px;
+    height: 52px;
+    background: transparent !important;
+    opacity: 1;
+}
+
+.hst-top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0; /* Align perfectly with buttons now */
+    padding: 0 16px;
+    height: 42px; /* Remaining height of the 94px header area */
+}
+
+.hst-icon-btn {
+    width: 50px;
+    height: 50px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    color: #1A202C;
+}
+
+.hst-icon-btn:active {
+    transform: scale(0.95);
+}
+
+/* FAB (ri:add-fill) */
+.hst-fab {
+    position: absolute;
+    top: 730px;
+    left: 310px;
+    width: 68px;
+    height: 68px;
+    background: #0056B3;
+    border: none;
+    border-radius: 34px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
+    z-index: 100;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.hst-fab:hover {
+    transform: scale(1.05);
+}
+
+.hst-fab:active {
+    transform: scale(0.9);
+}
+
+/* Home Indicator Placeholder */
+.hst-home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: #000000;
+    border-radius: 100px;
+    z-index: 200;
+}
+
+/* Ensure MainNavigation is fixed below */
+.home-screen-transport .main-navigation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+}

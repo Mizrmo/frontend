@@ -1,0 +1,298 @@
+/* Parent Container - Zero Scrolling Screen */
+.dut-screen {
+    width: 393px;
+    height: 100vh;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden; /* Screen itself never scrolls */
+    margin: 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hide Scrollbars globally */
+.dut-screen::-webkit-scrollbar,
+.dut-scroll-area::-webkit-scrollbar {
+    display: none;
+}
+.dut-screen, .dut-scroll-area {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* 1. Header Area (94px requested) */
+.dut-top-bar {
+    width: 393px;
+    height: 94px;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.dut-nav-row {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.dut-page-title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #1A1A1A;
+    text-align: center;
+    margin: 0;
+}
+
+.dut-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #1A1A1A;
+    cursor: pointer;
+    width: 68px; /* For balance */
+}
+
+.dut-spacer {
+    width: 68px;
+}
+
+/* 2. Tabs Row */
+.dut-tabs-container {
+    display: flex;
+    width: 393px;
+    height: 50px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.dut-tab {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.dut-tab-text {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dut-tab-text.inactive {
+    opacity: 0.6;
+}
+
+.dut-tab-line {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #FFCC00; /* Yellow indicator as requested */
+}
+
+/* 3. Section Label (Requests) */
+.dut-label-container {
+    padding: 15px 20px 5px;
+    flex-shrink: 0;
+}
+
+.dut-section-hint {
+    font-size: 13px;
+    color: #919191;
+    margin: 0;
+}
+
+/* 4. Scrollable List */
+.dut-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 20px 100px; /* Account for navbar */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Card - Precise Dimensions 366x152 */
+.dut-request-card {
+    width: 366px;
+    min-height: 152px; /* Changed from fixed height to min-height */
+    background: #FFFFFF;
+    border: 1px solid #A1A1A1;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+/* Body (Top part of card) */
+.dut-card-body {
+    display: flex;
+    gap: 15px;
+    height: 60px;
+}
+
+.dut-avatar-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.dut-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dut-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dut-passenger-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #5A5A5A;
+    margin: 0;
+}
+
+.dut-route-info {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #5A5A5A;
+    margin: 0;
+}
+
+.dut-loc-bold {
+    font-weight: 600; 
+    color: #1A1A1A; /* Darker bold for high visibility */
+}
+
+.dut-distance-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dut-distance-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #5A5A5A;
+}
+
+/* Card Footer (Buttons) */
+.dut-card-footer-btns {
+    display: flex;
+    gap: 6px;
+    width: 330px;
+    margin: 15px auto 0; /* Centered with 15px top push */
+}
+
+.dut-btn-accept, .dut-btn-reject {
+    flex: 1;
+    height: 45px;
+    border-radius: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20.29px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.dut-btn-accept {
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+}
+
+.dut-btn-reject {
+    background: #FFFFFF;
+    color: #FFCC00;
+    border: 1.5px solid #FFCC00;
+}
+
+/* History (Completed) Card */
+.dut-history-card {
+    width: 366px;
+    min-height: 106px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 0 auto;
+    flex-shrink: 0;
+}
+
+.dut-card-top {
+    display: flex;
+    gap: 15px;
+}
+
+.dut-history-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dut-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.dut-history-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #132235;
+    margin: 0;
+}
+
+.dut-history-date {
+    font-size: 12px;
+    color: #94A3B8;
+    white-space: nowrap;
+}
+
+.dut-history-route, .dut-history-stat {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #64748B;
+    margin: 0;
+}
+
+/* Interaction fixes */
+.dut-home-fix {
+    position: fixed;
+    bottom: 0;
+    width: 393px;
+    z-index: 200;
+}

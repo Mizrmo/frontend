@@ -1,0 +1,241 @@
+.ir-screen {
+    width: 393px;
+    height: 852px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: 'Montserrat', 'Inter', sans-serif;
+}
+
+/* Background Mock Content - Blurred */
+.ir-bg-blur {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    filter: blur(0.1px);
+    opacity: 0.6;
+}
+
+.ir-map-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.ir-map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ir-header-mock {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.ir-icon-circle {
+    width: 44px;
+    height: 44px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ir-bg-content {
+    position: absolute;
+    bottom: 50px;
+    left: 16px;
+    width: 361px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ir-payment-mock {
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+}
+
+.ir-pm-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.ir-pm-label {
+    font-size: 14px;
+    color: #4B5563;
+}
+
+.ir-pm-val {
+    font-weight: 600;
+}
+
+.ir-pm-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ir-pm-logo {
+    width: 40px;
+}
+
+.ir-pm-num {
+    display: block;
+    font-weight: 500;
+}
+
+.ir-pm-sub {
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.ir-cancel-mock-btn {
+    width: 100%;
+    height: 52px;
+    background: #0056B3; /* Blue as requested */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 26px;
+    font-weight: 600;
+}
+
+/* Dark Backdrop #262626 @ 0.7 */
+.ir-backdrop {
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 395px;
+    height: 852px;
+    background: #262626;
+    opacity: 0.7;
+    z-index: 100;
+}
+
+/* Status Bar */
+.ir-status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 120;
+}
+
+/* Popup - shifted up 'small' as requested */
+.ir-popup {
+    position: absolute;
+    top: 230px; /* Moved up from 248px */
+    left: 16px;
+    width: 361px;
+    height: 355px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 24px;
+}
+
+.ir-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.ir-illustration-frame {
+    margin-top: 50px;
+    margin-bottom: 16px;
+}
+
+.ir-circle-bg {
+    width: 107px;
+    height: 107px;
+    background: #FFFAE6;
+    border-radius: 53.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ir-car-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.ir-content {
+    text-align: center;
+    width: 100%;
+}
+
+.ir-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    color: #5A5A5A;
+    margin: 0 0 4px;
+}
+
+.ir-message {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #6B7280;
+    margin-bottom: 24px;
+}
+
+.ir-view-btn {
+    position: absolute;
+    top: 269px;
+    left: 25px;
+    width: 310px;
+    height: 47px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500; /* Standardized to Medium */
+    font-size: 16px;
+    line-height: 20.29px; /* Exactly as specified */
+    padding: 13px 18px;
+    gap: 9px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ir-home-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 110;
+}

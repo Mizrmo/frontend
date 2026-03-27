@@ -1,19 +1,18 @@
-/* Profile Setup Screen - Premium Mobile Look */
+/* Profile Setup Screen - Figma Redesign */
 .ep-screen {
     width: 393px;
     height: 852px;
     margin: 0 auto;
-    background: #F8FAFC;
+    background: #FFFFFF;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
 }
 
 .status-bar-wrapper {
     width: 100%;
-    height: 94px;
     background: #FFFFFF;
     flex-shrink: 0;
     position: relative;
@@ -21,40 +20,41 @@
 }
 
 .ep-header {
-    height: 60px;
+    height: 48px;
     display: flex;
     align-items: center;
     padding: 0 16px;
     justify-content: space-between;
-    background: #fff;
-    border-bottom: 1px solid #F1F5F9;
+    background: #FFFFFF;
+    margin-top: 10px;
 }
 
 .ep-back-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
-    color: #1A1A1A;
-    font-size: 14px;
-    font-weight: 600;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    font-weight: 400;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 20px;
+    padding: 0;
+    font-family: inherit;
 }
 
 .ep-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0F172A;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A1A1A;
     margin: 0;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .ep-body {
     flex: 1;
     overflow-y: auto;
-    padding: 24px;
+    padding: 24px 24px 100px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -64,67 +64,59 @@
     width: 0;
 }
 
-.ep-avatar-wrap {
-    position: relative;
-    width: 110px;
-    height: 110px;
+.ep-avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 24px;
     margin-bottom: 24px;
 }
 
+.ep-avatar-wrap {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+}
+
 .ep-avatar {
-    width: 110px;
-    height: 110px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 .ep-camera-badge {
     position: absolute;
-    bottom: 2px;
-    right: -4px;
-    width: 38px;
-    height: 38px;
+    bottom: 0px;
+    right: 0px;
+    width: 28px;
+    height: 28px;
     background: #E6EEF7;
-    border-radius: 35px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
     cursor: pointer;
-    box-sizing: border-box;
-}
-
-.ep-skip-btn {
-    background: none;
-    border: none;
-    font-size: 16px;
-    font-weight: 500;
-    color: #E0E0E0;
-    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid white;
 }
 
 .ep-switch-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #fff;
-    border: 1px solid #E2E8F0;
-    padding: 10px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 32px;
+    background: #F1F5F9;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1A1A1A;
     cursor: pointer;
 }
 
 .ep-switch-dot {
-    width: 20px;
-    height: 20px;
-    background: #004DA1;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -132,108 +124,65 @@
 
 .ep-form {
     width: 100%;
-    background: #fff;
-    border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    background: #FFFFFF;
 }
 
 .ep-field {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .ep-label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #64748B;
-    margin-bottom: 8px;
-    margin-left: 4px;
+    font-size: 11px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 6px;
+    font-family: inherit;
 }
 
 .ep-input {
     width: 100%;
     padding: 14px 16px;
-    border: 1.5px solid #F1F5F9;
-    border-radius: 12px;
-    font-size: 15px;
-    background: #F8FAFC;
-    color: #0F172A;
+    border: 1px solid #E2E8F0;
+    border-radius: 24px;
+    font-size: 14px;
+    background: #FFFFFF;
+    color: #1A1A1A;
     box-sizing: border-box;
-    transition: all 0.2s;
+    font-family: inherit;
 }
 
 .ep-input:focus {
-    border-color: #004DA1;
-    background: #fff;
+    border-color: #0056B3;
     outline: none;
 }
 
 .ep-save-btn {
-    width: 100%;
-    padding: 16px;
-    background: #004DA1;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 365px;
+    max-width: 100%;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
     border: none;
-    border-radius: 16px;
+    border-radius: 30px;
+    padding: 13px 18px;
+    gap: 9px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-style: normal;
     font-size: 16px;
-    font-weight: 700;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
     cursor: pointer;
-    margin-top: 12px;
-    box-shadow: 0 10px 15px -3px rgba(0, 77, 161, 0.2);
+    margin-top: 32px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .ep-save-btn:active {
     transform: scale(0.98);
-}
-
-.ep-tab-bar {
-    position: absolute;
-    width: 393px;
-    height: 86px;
-    top: 766px;
-    left: 0;
-    background: #F2F2F2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 34px;
-    padding: 11px 0;
-    box-sizing: border-box;
-    z-index: 1000;
-}
-
-.ep-tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.5;
-}
-
-.ep-tab span {
-    font-size: 11px;
-    font-weight: 600;
-    color: #64748B;
-}
-
-.ep-tab.active {
-    opacity: 1;
-    position: relative;
-}
-
-.ep-tab.active span {
-    color: #004DA1;
-}
-
-.ep-tab-indicator {
-    position: absolute;
-    top: -12px;
-    width: 24px;
-    height: 3px;
-    background: #004DA1;
-    border-radius: 2px;
 }

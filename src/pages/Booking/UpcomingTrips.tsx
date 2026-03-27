@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBar from '../../components/StatusBar';
 import HomeIndicator from '../../components/HomeIndicator';
+import MainNavigation from '../../components/MainNavigation';
 // @ts-ignore
 import danielAvatar from '../../assets/Ellipse 1192.png';
 import './UpcomingTrips.css';
@@ -185,55 +186,7 @@ const UpcomingTrips = () => {
             </div>
 
             {/* ── Bottom Nav Bar ── */}
-            <nav className="ut-tab-bar">
-
-                {/* Home */}
-                <button className="ut-nav-btn" onClick={() => navigate('/home_screen_Transport')}>
-                    <div className="tab-icon-wrap" style={{ width: '24px', height: '24px' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 21.5s-8-5.5-8-11.5c0-4.42 3.58-8 8-8s8 3.58 8 8c0 6-8 11.5-8 11.5z" stroke="black" strokeWidth="2" />
-                            <circle cx="12" cy="10" r="5" stroke="black" strokeWidth="2" />
-                            <circle cx="12" cy="10" r="2" fill="black" />
-                        </svg>
-                    </div>
-                    <span>Home</span>
-                </button>
-
-                {/* Trips — active */}
-                <button className="ut-nav-btn active" onClick={() => navigate('/upcoming-trips')}>
-                    <div className="tab-icon-wrap" style={{ width: '28px', height: '28px' }}>
-                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                            <rect width="28" height="28" rx="4" fill="#0056B3" />
-                            <path d="M4 8h20" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                            <path d="M20 8v16" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                            <circle cx="10" cy="16" r="4.5" fill="white" />
-                        </svg>
-                    </div>
-                    <span style={{ color: '#0056B3', fontWeight: '600' }}>Trips</span>
-                </button>
-
-                {/* Favorites */}
-                <button className="ut-nav-btn" onClick={() => navigate('/favorite-rides')}>
-                    <div className="tab-icon-wrap" style={{ width: '24px', height: '24px' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                            <path d="M17.5 7.5a1.5 1.5 0 0 1 1.5 1.5" stroke="black" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                    </div>
-                    <span>Favorites</span>
-                </button>
-
-                {/* Profile */}
-                <button className="ut-nav-btn" onClick={() => navigate('/account-settings')}>
-                    <div className="tab-icon-wrap" style={{ width: '25px', height: '25px' }}>
-                        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                    </div>
-                    <span>Profile</span>
-                </button>
-            </nav>
+            <MainNavigation activeTab="trips" />
 
             <HomeIndicator dark />
         </div>

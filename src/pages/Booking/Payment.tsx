@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import StatusBar from '../../components/StatusBar';
 import HomeIndicator from '../../components/HomeIndicator';
+import MainNavigation from '../../components/MainNavigation';
 import visaLogo from '../../assets/visa-logo.png';
 import mtnLogo from '../../assets/mtn-logo-img.png';
 import './Payment.css';
@@ -21,20 +22,20 @@ const Payment = () => {
             <div className="status-bar-wrapper">
                 <StatusBar dark />
                 <header className="payment-header">
-                    <button className="back-btn-circle" onClick={handleBack}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M15 18l-6-6 6-6" />
+                    <button className="payment-back-btn" onClick={handleBack}>
+                        <svg width="11" height="18" viewBox="0 0 11 18" fill="none" stroke="#414141" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 16L2 9L9 2" />
                         </svg>
+                        <span>Back</span>
                     </button>
-                    <h1 className="payment-title-main" style={{ position: 'absolute', width: '100%', left: 0, textAlign: 'center', zIndex: -1 }}>Payment</h1>
-                    <div className="header-action-placeholder"></div>
+                    <h1 className="payment-title">Payment</h1>
+                    <div style={{ width: 60 }} />
                 </header>
             </div>
 
             <div className="payment-scroll-container">
                 <div className="section-header">
                     <h2>Saved Methods</h2>
-                    <button className="add-new-btn" onClick={handleCardClick}>Add New</button>
                 </div>
 
                 <div className="payment-methods-grid">
@@ -81,7 +82,7 @@ const Payment = () => {
                     </div>
                 </div>
 
-                <div className="section-header" style={{ marginTop: '24px' }}>
+                <div className="section-header" style={{ marginTop: '12px' }}>
                     <h2>Other Methods</h2>
                 </div>
 
@@ -122,8 +123,13 @@ const Payment = () => {
                         </div>
                     </div>
                 </div>
+
+                <button className="payment-add-method-btn" onClick={handleCardClick}>
+                    Add Payment Method
+                </button>
             </div>
 
+            <MainNavigation activeTab="home" />
             <HomeIndicator dark />
         </div>
     );

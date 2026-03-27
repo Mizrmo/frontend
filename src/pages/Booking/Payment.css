@@ -11,62 +11,59 @@
 
 .status-bar-wrapper {
     width: 393px;
-    height: 94px;
-    background: #F8F9FB;
+    height: 44px;
+    background: #FFFFFF;
     flex-shrink: 0;
     position: relative;
     z-index: 100;
 }
 
 .payment-header {
-    position: absolute;
-    top: 52px;
-    left: 0;
-    width: 100%;
-    height: 42px;
+    height: 80px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    padding: 0 16px 20px 16px;
     justify-content: space-between;
-    padding: 0 20px;
-    background: transparent;
+    background: #FFFFFF;
+    margin-top: 10px;
+    border-bottom: 1px solid #DDDDDD;
+    position: relative;
     box-sizing: border-box;
 }
 
-.back-btn-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: white;
-    border: none;
+.payment-back-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: #1A1A1A;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    font-weight: 400;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 0;
+    font-family: inherit;
+    z-index: 2;
 }
 
-.back-btn-circle:active {
-    transform: scale(0.92);
-}
-
-.payment-title-main {
-    font-size: 18px;
-    font-weight: 600;
+.payment-title {
+    font-size: 16px;
+    font-weight: 500;
     color: #1A1A1A;
     margin: 0;
-}
-
-.header-action-placeholder {
-    width: 40px;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
+    z-index: 1;
 }
 
 .payment-scroll-container {
     flex: 1;
     overflow-y: auto;
     padding: 24px 20px;
-    padding-bottom: 100px;
+    padding-bottom: 160px;
 }
 
 .payment-scroll-container::-webkit-scrollbar {
@@ -81,19 +78,34 @@
 }
 
 .section-header h2 {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     color: #1A1A1A;
     margin: 0;
 }
 
-.add-new-btn {
-    font-size: 12px;
-    font-weight: 600;
-    color: #0056B3;
-    background: none;
+.payment-add-method-btn {
+    width: 320px;
+    height: 45px;
+    background: #0056B3 !important;
+    color: #FFFFFF;
     border: none;
+    border-radius: 30px;
+    padding: 13px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 24px auto 20px auto;
+    transition: all 300ms ease-out;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+}
+
+.payment-add-method-btn:active {
+    transform: scale(0.98);
 }
 
 .payment-methods-grid {
@@ -245,13 +257,13 @@
 .other-payment-options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .method-item {
     background: white;
-    border-radius: 16px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 10px 16px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -270,9 +282,9 @@
 }
 
 .method-icon-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -295,13 +307,13 @@
 }
 
 .method-name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: #1A1A1A;
 }
 
 .method-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: #666666;
 }
 

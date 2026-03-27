@@ -7,15 +7,16 @@ const StatusBar = ({ dark = false }: StatusBarProps) => {
 
     return (
         <div style={{
-            width: '100%',
-            height: '44px',
+            width: '393px',
+            height: '52px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 20px',
+            padding: '16px 24px 0 24px', // Added some top padding to align content better in the 52px height
             position: 'relative',
             zIndex: 100,
             flexShrink: 0,
+            boxSizing: 'border-box'
         }}>
             {/* Time */}
             <span style={{
@@ -23,6 +24,8 @@ const StatusBar = ({ dark = false }: StatusBarProps) => {
                 fontWeight: 600,
                 color: textColor,
                 fontFamily: 'Inter, sans-serif',
+                letterSpacing: '-0.3px',
+                lineHeight: '1'
             }}>9:41</span>
 
             {/* Icons */}

@@ -1,0 +1,120 @@
+.rac-screen {
+    width: 393px;
+    height: 852px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: 'Montserrat', 'Inter', sans-serif;
+}
+
+/* Exactly as Available Rides Screen - Blurred layer */
+.rac-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.rac-bg-overlay.blurred {
+    filter: blur(3px); /* Specified blur */
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Backdrop */
+.rac-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+/* Popup - Rect width: 361; height: 355; top: 248px; left: 16px; */
+.rac-popup {
+    position: absolute;
+    top: 248px;
+    left: 16px;
+    width: 361px;
+    height: 355px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 24px;
+}
+
+.rac-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Illustration Circle - width: 107; height: 107; top: 78px; left: 126px; */
+.rac-illustration-frame {
+    margin-top: 50px; /* Offset to center relative to mockup */
+    margin-bottom: 24px;
+}
+
+.rac-circle-bg {
+    width: 107px;
+    height: 107px;
+    background: #FFFAE6; /* Specified yellow background */
+    border-radius: 53.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rac-car-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Text Styling */
+.rac-content {
+    text-align: center;
+    width: 100%;
+}
+
+.rac-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 30px;
+    color: #132235;
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.rac-message {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    color: #6B7280;
+    text-align: center;
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+/* Home Indicator */
+.rac-home-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 110;
+}

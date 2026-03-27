@@ -1,0 +1,269 @@
+.drr-screen {
+    width: 393px;
+    height: 852px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    background: #FFFFFF;
+    font-family: 'Roboto', 'Montserrat', sans-serif;
+}
+
+/* Background Mock Content - Dimmed underneath backdrop */
+.drr-bg-layout {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    opacity: 0.6; /* Dim the base content like IncomingRequest */
+}
+
+.drr-map-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.drr-map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.drr-track-car {
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    width: 40px;
+}
+
+.drr-header-mock {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.drr-icon-circle {
+    width: 44px;
+    height: 44px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Mock Bottom Panel (Dimmed behind backdrop) */
+.drr-footer-mock {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    padding: 24px 20px 48px;
+    box-sizing: border-box;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+
+.drr-pm-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.drr-pm-label {
+    font-size: 14px;
+    color: #5A5A5A;
+}
+
+.drr-pm-val {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1A1A1A;
+}
+
+.drr-pm-card {
+    background: rgba(0, 86, 179, 0.05);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.drr-pm-logo {
+    width: 40px;
+}
+
+.drr-pm-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.drr-pm-num {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1A1A1A;
+}
+
+.drr-pm-sub {
+    font-size: 11px;
+    color: #5A5A5A;
+}
+
+.drr-action-btns-mock {
+    display: flex;
+    gap: 12px;
+}
+
+.drr-call-mock {
+    flex: 1;
+    height: 48px;
+    border: 1.5px solid #FFCC00;
+    background: transparent;
+    border-radius: 30px;
+    color: #FFCC00;
+    font-weight: 600;
+}
+
+.drr-msg-mock {
+    flex: 1.2;
+    height: 48px;
+    background: #0056B3;
+    border: none;
+    border-radius: 30px;
+    color: #FFFFFF;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Dark Backdrop Layer */
+.drr-backdrop {
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 395px;
+    height: 852px;
+    background: #262626;
+    opacity: 0.7;
+    z-index: 100;
+    cursor: pointer;
+}
+
+/* Status Bar */
+.drr-status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 120;
+}
+
+/* Rating Popup (Centered and shifted down small) */
+.drr-popup {
+    position: absolute;
+    top: 280px; /* Offset as requested for Rating screen */
+    left: 16px;
+    width: 361px;
+    height: 355px;
+    background: #FFFFFF;
+    border-radius: 12px; /* Reduced from 20px for a sharper look */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.drr-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.drr-illustration-frame {
+    margin: 10px 0 20px;
+}
+
+.drr-profile-bg {
+    width: 100px;
+    height: 100px;
+    background: #F8FAFC;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.drr-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.drr-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.drr-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 400; /* Reverted from 500 to match 'dont bold' */
+    line-height: 30px;
+    color: #5A5A5A; /* Color updated to requested grey */
+    margin: 0 0 16px;
+    text-align: center;
+}
+
+.drr-stars-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.drr-star-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.drr-message {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #898989; /* Color updated as requested */
+    margin: 0;
+    text-align: center;
+}
+
+/* Home Indicator */
+.drr-home-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 120;
+}

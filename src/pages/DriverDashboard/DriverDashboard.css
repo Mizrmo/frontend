@@ -1,0 +1,499 @@
+.driver-dashboard {
+    width: 393px;
+    height: 1020px;
+    background: #FFFFFF;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: 'Inter', -apple-system, sans-serif;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.driver-dashboard::-webkit-scrollbar {
+    width: 0;
+}
+
+/* Header Area */
+.dd-header-area {
+    background: #FFFFFF;
+    width: 100%;
+    height: 94px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.status-bar-wrapper {
+    width: 100%;
+    height: 52px;
+    background: #FFFFFF;
+}
+
+.dd-top-bar {
+    position: absolute;
+    top: 62px;
+    left: 16px;
+    width: 361px; /* 393 - 16 - 16 = 361 approx */
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    z-index: 1000;
+}
+
+.dd-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+
+.dd-greeting {
+    margin-top: 39px;
+    padding: 0 16px;
+    width: 100%;
+    height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 30px;
+    color: #132235;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Content Container (Frame 427319759) */
+.dd-content-container {
+    margin-top: 16px;
+    width: 100%;
+    padding: 0 16px 120px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Stats Section (Earnings Cards Container) */
+.dd-stats-section {
+    background: #FFFFFF;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 27px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dd-stats-earnings {
+    margin-bottom: 24px;
+}
+
+.dd-stats-label {
+    width: 148px;
+    height: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.5); /* #00000080 */
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.dd-earnings-value-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dd-wallet-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dd-wallet-icon svg {
+    width: 20px; /* Slightly smaller for better visual horizontal alignment */
+    height: 20px;
+}
+
+.dd-earnings-value {
+    width: 129px;
+    height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 30px;
+    color: #000000;
+    display: flex;
+    align-items: center;
+}
+
+.dd-stats-row {
+    display: flex;
+    gap: 40px;
+}
+
+.dd-stats-item {
+    flex: 1;
+}
+
+.dd-stats-value {
+    width: 148px;
+    height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 30px;
+    color: #000000;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.dd-miz-suffix {
+    font-size: 16px;
+    color: #718096;
+    font-weight: 400;
+}
+
+/* Active Ride Frame (427319593) */
+.dd-active-ride-section {
+    width: 100%;
+    min-height: auto;
+    background: #FFFFFF !important;
+    padding: 16px 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    border-top: none !important;
+    margin: 0 !important;
+}
+
+.dd-section {
+    padding: 24px 0;
+    border-top: 8px solid #F7FAFC;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+/* Upcoming Rides Frame (427319752) */
+.dd-upcoming-ride-section {
+    width: 100%;
+    min-height: auto;
+    background: #FFFFFF !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    box-sizing: border-box;
+    border-top: none !important;
+    margin: 0 !important;
+}
+
+.dd-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0; /* Removing fixed margin to use the section gap instead */
+}
+
+.dd-section-title {
+    width: 284px;
+    height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 30px;
+    color: #132235;
+    margin: 0;
+}
+
+.dd-view-all {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dd-view-all.blue { color: #0056B3; }
+.dd-view-all.yellow { color: #FFCC00; }
+
+/* Active Card */
+.dd-active-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dd-active-card {
+    display: flex;
+    align-items: center; /* Center avatar vertically in 92px box */
+    gap: 12px;
+    width: 364px;
+    height: 92px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E1E6EF;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.dd-active-card:hover {
+    background: #F8FAFC;
+}
+/* Remove previous high-fidelity effects */
+.dd-active-card::before {
+    display: none;
+}
+
+.dd-avatar-wrap {
+    position: relative;
+    padding: 4px;
+}
+
+.dd-avatar-wrap img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Remove pulse animation as it's not in the new request */
+.dd-avatar-pulse-ring {
+    display: none;
+}
+
+@keyframes avatar-pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+
+.dd-active-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dd-active-info-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.dd-active-name {
+    height: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    color: #132235;
+    line-height: 30px;
+    margin: 0;
+}
+
+.dd-active-date {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 400;
+}
+
+.dd-active-status-tag {
+    display: none; /* Removed based on "active=false; upcoming=false" in prompt */
+}
+
+.dd-active-status-tag span {
+    font-size: 10px;
+    font-weight: 800;
+    color: #16A34A;
+    letter-spacing: 0.5px;
+}
+
+.dd-status-pulse {
+    width: 6px;
+    height: 6px;
+    background: #22C55E;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.dd-active-date {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748B;
+    font-weight: 600;
+}
+
+.dd-route-text {
+    display: block;
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 6px;
+}
+
+.dd-route-text strong {
+    color: #1A202C;
+    font-weight: 600;
+}
+
+.dd-starts-text {
+    display: block;
+    font-size: 13px;
+    color: #718096;
+}
+
+.dd-starts-text strong {
+    color: #1A202C;
+    font-weight: 600;
+}
+
+/* Upcoming Card (Detailed) */
+.dd-upcoming-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.dd-upcoming-top {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dd-upcoming-icon-wrap {
+    width: 68px;
+    height: 68px;
+    background: #EBF4FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dd-upcoming-top-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dd-upcoming-title {
+    width: 270px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    color: #132235;
+    line-height: 30px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dd-upcoming-meta {
+    font-size: 14px;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.dd-upcoming-meta strong {
+    color: #1A202C;
+    font-weight: 600;
+}
+
+.dd-pipe {
+    color: #E2E8F0;
+}
+
+.dd-divider {
+    height: 1px;
+    background: #F1F5F9;
+    margin-bottom: 20px;
+}
+
+.dd-route-list {
+    position: relative;
+    padding-left: 32px;
+}
+
+.dd-route-line {
+    position: absolute;
+    left: 8px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    border-left: 2px solid #E2E8F0;
+}
+
+.dd-route-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dd-route-icon {
+    position: absolute;
+    left: -32px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blue-point {
+    width: 24px;
+    height: 24px;
+    background: #EBF4FF;
+    border-radius: 50%;
+}
+
+.blue-dot-inner {
+    width: 10px;
+    height: 10px;
+    background: #0056B3;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+}
+
+.yellow-pin svg {
+    filter: drop-shadow(0 2px 3px rgba(255, 204, 0, 0.3));
+}
+
+.dd-route-address {
+    font-size: 14px;
+    color: #1A202C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+/* Navigation is handled by global MainNavigation styles */

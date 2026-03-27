@@ -1,0 +1,500 @@
+.dsr-screen {
+    width: 393px;
+    height: 100vh; /* Dynamic Full Viewport - Zero Scroll */
+    position: relative;
+    overflow: hidden;
+    background: #FFFFFF;
+    margin: 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.dsr-screen::-webkit-scrollbar {
+    display: none;
+}
+
+/* Map Background - Flexible top area */
+.dsr-map-bg {
+    position: relative; /* Changed from absolute to flex with parent */
+    width: 100%;
+    flex: 1; /* Occupy all remaining space */
+    z-index: 1;
+    overflow: hidden;
+}
+
+.dsr-map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Track Car */
+.dsr-track-car {
+    position: absolute;
+    width: 24.5px;
+    height: 49.0px;
+    top: 138px;
+    left: 136px;
+    transform: rotate(177deg); /* Facing the line heading directly */
+    z-index: 5;
+    opacity: 1;
+}
+
+/* Path Line - solid as per mockup */
+.dsr-map-line {
+    position: absolute;
+    width: 6px;
+    height: 128.5px;
+    top: 178.46px;
+    left: 147px; /* Fine-tuned for center-hit */
+    transform: rotate(177deg);
+    border-radius: 3px;
+    background: #A0A0A0;
+    z-index: 4;
+}
+
+/* Destination Marker (Yellow Circle with Pin) */
+.dsr-map-dest {
+    position: absolute;
+    top: 306px; /* Matched to line end */
+    left: 154px; 
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.dsr-dest-pulse {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: #FFCC00;
+    opacity: 0.2;
+    border-radius: 50%;
+}
+
+.dsr-dest-pin {
+    width: 14px;
+    height: 14px;
+    background: #FFCC00;
+    border: 3px solid #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+}
+
+/* Header Status Bar + Back Area - height: 94px; */
+.dsr-header {
+    position: absolute;
+    top: 2px; /* Slight nudge down for visibility */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 393px;
+    height: 94px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.dsr-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #4B5563;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 8px; /* Adjusted to sit within the 94px area naturally under StatusBar */
+    margin-left: 20px;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+/* Bottom Sheet Container - Anchored above navbar, flex-shrink: 0 */
+.dsr-sheet {
+    flex-shrink: 0;
+    width: 395px;
+    margin-left: -1px;
+    background: #FFFFFF;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    z-index: 5;
+    padding: 12px 0;
+    margin-bottom: 96px; /* Offset for fixed Navigation Bar */
+    box-sizing: border-box;
+    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* No scroll here */
+}
+
+.dsr-drag-handle {
+    width: 134px;
+    height: 5px;
+    background: #B6B6B6;
+    border-radius: 100px;
+    margin: 0 auto 20px;
+}
+
+/* Top Action Row (Time & Start) */
+.dsr-top-action-row {
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px; /* Compact */
+}
+
+.dsr-arrival-time {
+    display: flex;
+    flex-direction: column;
+}
+
+.dsr-time-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #1A1A1A;
+}
+
+.dsr-time-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #B8B8B8;
+}
+
+.dsr-start-btn {
+    width: 148px;
+    height: 47px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-family: 'Roboto', sans-serif; /* Specified */
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20.29px;
+    cursor: pointer;
+    letter-spacing: 0;
+}
+
+.dsr-divider {
+    height: 1px;
+    background: #F1F5F9;
+    width: 100%;
+}
+
+/* Locations */
+.dsr-locations {
+    padding: 8px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dsr-loc-row {
+    display: flex;
+    gap: 16px;
+    position: relative;
+}
+
+.dsr-loc-marker-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 24px;
+}
+
+/* Premium Blue Marker Marker */
+.dsr-marker-blue-premium {
+    width: 24px;
+    height: 24px;
+    background: rgba(0, 86, 179, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+    margin-bottom: -4px; /* Slight pull for better line connection */
+}
+
+/* New class added as per instruction for DriverRideDetails.css context */
+.drd-icon-circle-blue {
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 86, 179, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+}
+
+.dsr-marker-inner-white {
+    width: 16px;
+    height: 16px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dsr-marker-center-dot {
+    width: 10px;
+    height: 10px;
+    background: #0056B3;
+    border-radius: 50%;
+}
+
+.dsr-marker-line {
+    width: 2px;
+    height: 32px;
+    border-left: 3px dotted #0056B3; /* Standardized to Blue dots */
+    margin: 4px 0;
+}
+
+.dsr-loc-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.dsr-loc-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 30px; 
+    color: #5A5A5A; /* Standardized to #5A5A5A */
+}
+
+.dsr-loc-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #B8B8B8;
+}
+
+.dsr-dist {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1A1A1A;
+}
+
+/* Passenger Row */
+.dsr-passenger-row {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dsr-passenger-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dsr-passenger-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #F1F5F9;
+}
+
+.dsr-passenger-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dsr-passenger-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #334155;
+}
+
+.dsr-passenger-actions {
+    display: flex;
+    gap: 10px; /* As requested */
+}
+
+.dsr-action-btn {
+    width: 38px;
+    height: 38px;
+    background: #FFFFFF;
+    border: 1px solid #FFCC00;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Soft premium shadow */
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dsr-action-btn:active {
+    transform: scale(0.92); /* Tactile feedback */
+}
+
+/* Specific Chat Button Overrides */
+.dsr-action-btn.msg.blue-bg {
+    background: #0056B3;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+}
+
+.dsr-action-btn img {
+    width: 20px; /* Slightly larger for better readability */
+    height: 20px;
+    object-fit: contain;
+}
+
+.dsr-chat-img {
+    width: 16px; /* Chat icon is usually a bit smaller internally */
+    height: 16px;
+    object-fit: contain;
+}
+
+.dsr-action-btn.msg.blue-bg {
+    background: #0056B3; /* Branded Blue */
+    border: none; /* Solid color no border */
+}
+
+.dsr-chat-img {
+    width: 18px; /* Slightly larger for clarity */
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* Flip blue icon to white */
+}
+
+.dsr-action-btn.msg svg {
+    stroke: #0056B3; /* Branding consistency */
+}
+
+.dsr-action-circle.call {
+    color: #FFCC00; /* Yellow call icon */
+}
+
+.dsr-action-circle.msg {
+    color: #0056B3; /* Blue message icon */
+}
+
+/* Fare Row */
+.dsr-fare-row {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.dsr-fare-icon-bg {
+    width: 44px;
+    height: 44px;
+    background: #E6EEF7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0056B3;
+}
+
+.dsr-fare-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.dsr-fare-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #334155;
+}
+
+.dsr-fare-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #B8B8B8;
+}
+
+/* Footer Buttons - Static within the sheet flow */
+.dsr-footer-btns {
+    width: 100%;
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #FFFFFF;
+}
+
+/* Standard Hollow Action Button - As per Image 43 */
+.dsr-secondary-btn {
+    width: 361px;
+    height: 45px;
+    background: #FFFFFF;
+    color: #0056B3;
+    border: 1px solid #0056B3;
+    border-radius: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20.29px;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0;
+    flex-shrink: 0;
+}
+
+/* Primary Solid Action Button - For Accept */
+.dsr-primary-btn {
+    width: 361px;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20.29px;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0;
+    flex-shrink: 0;
+}
+
+.dsr-secondary-btn:active, .dsr-primary-btn:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+
+/* Home Indicator & Tabs spacing */
+.dsr-home-indicator {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
