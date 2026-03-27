@@ -1,0 +1,194 @@
+/* ── Side Nav Trigger ── */
+.side-nav-trigger {
+    position: absolute;
+    top: 20px;
+    left: 350px;
+    width: 45px;
+    height: 45px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 500;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08); /* Drop shadow: X:0, Y:4, Blur:4, Spread:0, #000000 8% */
+}
+
+/* ── Backdrop ── */
+.side-nav-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1500;
+}
+
+/* ── Drawer ── */
+.side-nav-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100%;
+    background: #FFFFFF;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    transform: translateX(100%);
+    transition: transform 0ms; /* Instant as per spec */
+}
+
+.side-nav-drawer--open {
+    transform: translateX(0);
+}
+
+/* ── Header Row ── */
+.side-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.side-nav-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-nav-hamburger-static {
+    width: 45px;
+    height: 45px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Profile Section ── */
+.side-nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.side-nav-avatar {
+    width: 54px;
+    height: 54px;
+    background: #E8E8E8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-nav-name {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.side-nav-role {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    color: #A0A0A0;
+    margin-top: 2px;
+}
+
+/* ── Switch Profile ── */
+.side-nav-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centering content check */
+    gap: 10px;
+    background: #ECECEC;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    width: 252px;
+    height: 33px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+}
+
+/* ── Divider ── */
+.side-nav-divider {
+    height: 1px;
+    background: #F0F0F0;
+    margin-bottom: 8px;
+}
+
+/* ── Menu Items ── */
+.side-nav-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.side-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    height: 30px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 24px; /* Space between items */
+}
+
+.side-nav-item-icon {
+    color: #1A1A1A;
+    display: flex;
+    align-items: center;
+}
+
+.side-nav-item-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #1A1A1A;
+}
+
+/* ── Logout ── */
+.side-nav-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 16px 0;
+    margin-top: auto;
+}
+
+.side-nav-logout span {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #E53935;
+}

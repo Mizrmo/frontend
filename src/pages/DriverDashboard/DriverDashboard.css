@@ -3,14 +3,22 @@
     height: 1020px;
     background: #FFFFFF;
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden; /* Contains sidebar and nav inside */
     font-family: 'Inter', -apple-system, sans-serif;
     margin: 0 auto;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 
 .driver-dashboard::-webkit-scrollbar {
+    width: 0;
+}
+
+.dd-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.dd-scroll-area::-webkit-scrollbar {
     width: 0;
 }
 

@@ -1,0 +1,308 @@
+/* ── Miz Miles Home Styles ── */
+
+.mmh-screen {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden; /* Contains sidebar and nav inside */
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Header ── */
+.mmh-header {
+    background: #FFFFFF;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid #F2F2F2;
+}
+
+.mmh-nav-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 8px;
+}
+
+.mmh-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #1A1A1A;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+}
+
+.mmh-page-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.mmh-menu-trigger {
+    width: 45px;
+    height: 45px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08); /* X:0, Y:4, Blur:4, Spread:0, #000000 8% */
+    padding: 0;
+}
+
+/* ── Scroll Area ── */
+.mmh-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px 100px;
+    scrollbar-width: none;
+}
+
+.mmh-scroll-area::-webkit-scrollbar {
+    display: none;
+}
+
+/* ── Points Carousel ── */
+.mmh-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    margin: 0 -16px 40px; /* Increased bottom spacing as requested */
+    padding: 0 16px;
+    scrollbar-width: none;
+}
+
+.mmh-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.mmh-points-card {
+    background: #0056B3;
+    width: 363px; /* Exact width from spec */
+    height: 141px; /* Exact height from spec */
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    border-radius: 10px; /* Refined to 10px */
+    padding: 10px 23px; /* Precise padding from spec */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Internal gap from spec */
+}
+
+.mmh-points-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.mmh-points-label {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+}
+
+.mmh-menu-dots {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.mmh-points-divider {
+    height: 1px;
+    width: 317px;
+    background: #FFFFFF;
+    margin: 4px auto 14px; /* Increased bottom spacing to move balance row down */
+}
+
+.mmh-points-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mmh-points-value {
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px; /* Updated from 28px to match label typography */
+    font-weight: 500;
+    line-height: 30px;
+}
+
+.mmh-redeem-btn-top {
+    background: #FFCC00;
+    color: #0056B3;
+    width: 119px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Rewards Section Header ── */
+.mmh-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mmh-section-title {
+    color: #B8B8B8;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.mmh-see-all {
+    color: #FFCC00;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* ── Reward Cards ── */
+.mmh-rewards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mmh-reward-card {
+    display: flex;
+    background: #FFFFFF;
+    border: 1px solid #ACACAC; /* Precise border from spec */
+    border-radius: 10px;
+    width: 364px;
+    height: 95px;
+    padding: 10px 22px;
+    gap: 7px; /* Specification gap */
+    align-items: center; /* Inner alignment */
+}
+
+.mmh-reward-icon-box {
+    width: 38px;
+    height: 38px;
+    background: #E6EEF7;
+    border-radius: 27px; /* Circular halo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mmh-seal-icon {
+    width: 23px;
+    height: 23px;
+    background: #0056B3;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mmh-reward-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mmh-reward-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mmh-reward-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px; /* High-fidelity 18px spec */
+    font-weight: 500;
+    line-height: 30px;
+    color: #000000;
+    margin: 0;
+}
+
+.mmh-menu-dots-grey {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.mmh-menu-dots-grey svg {
+    fill: #ACACAC; /* Precise grey from spec */
+}
+
+.mmh-reward-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mmh-reward-cost {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #A0A0A0;
+    width: 131px;
+    height: 42px;
+    padding: 8px 16px 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mmh-redeem-link {
+    background: none;
+    border: none;
+    color: #0056B3;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: right;
+    cursor: pointer;
+    padding: 0;
+    align-self: flex-end; /* Ensures right alignment in flex container */
+}
+
+/* ── Positioning Fixes ── */
+.mmh-home-fix {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #FFFFFF;
+}

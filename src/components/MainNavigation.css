@@ -1,12 +1,11 @@
 .nav-container-with-indicator {
-    position: fixed;
+    position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 393px;
+    left: 0;
+    width: 100%;
     background-color: #FFFFFF;
     border-top: 1px solid #F1F5F9;
-    z-index: 1000;
+    z-index: 100; /* Below SideNav */
     display: flex;
     flex-direction: column;
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Registration from './pages/Authentication/Registration'
 import Verification from './pages/Authentication/Verification'
@@ -40,11 +41,24 @@ import DriverUpcomingTrips from './pages/DriverDashboard/DriverUpcomingTrips'
 import DriverRideDetails from './pages/DriverDashboard/DriverRideDetails'
 import DriverRateRider from './pages/DriverDashboard/DriverRateRider'
 import DriverFavoriteRides from './pages/DriverDashboard/DriverFavoriteRides'
+import MizMilesHome from './pages/MizMiles/MizMilesHome'
+import MizMilesRewards from './pages/MizMiles/MizMilesRewards'
+import MizMilesRedeemConfirm from './pages/MizMiles/MizMilesRedeemConfirm'
+import SideNav from './components/SideNav'
+
+// Global Context for SideNav
+export const SideNavContext = React.createContext({
+    isOpen: false,
+    setIsOpen: (val: boolean) => {},
+});
 
 function App() {
+    const [isSideNavOpen, setIsSideNavOpen] = React.useState(false);
+
     return (
-        <Router>
-            <Routes>
+        <SideNavContext.Provider value={{ isOpen: isSideNavOpen, setIsOpen: setIsSideNavOpen }}>
+            <Router>
+                <Routes>
                 <Route path="/" element={<Navigate to="/onboarding" replace />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/register" element={<Registration />} />
@@ -87,9 +101,13 @@ function App() {
                 <Route path="/driver-ride-details" element={<DriverRideDetails />} />
                 <Route path="/rate_trip_rider" element={<DriverRateRider />} />
                 <Route path="/driver-favorite-rides" element={<DriverFavoriteRides />} />
+                <Route path="/miz-miles" element={<MizMilesHome />} />
+                <Route path="/miz-miles-rewards" element={<MizMilesRewards />} />
+                <Route path="/miz-miles-confirm" element={<MizMilesRedeemConfirm />} />
                 <Route path="*" element={<Navigate to="/onboarding" replace />} />
-            </Routes>
-        </Router>
+                </Routes>
+            </Router>
+        </SideNavContext.Provider>
     )
 }
 
