@@ -45,6 +45,16 @@ import MizMilesHome from './pages/MizMiles/MizMilesHome'
 import MizMilesRewards from './pages/MizMiles/MizMilesRewards'
 import MizMilesRedeemConfirm from './pages/MizMiles/MizMilesRedeemConfirm'
 import SideNav from './components/SideNav'
+import DriverAccountSettings from './pages/DriverAccount/DriverAccountSettings'
+import DriverProfile from './pages/DriverAccount/DriverProfile'
+import EditProfile from './pages/DriverAccount/EditProfile'
+import DriverDocuments from './pages/DriverAccount/DriverDocuments'
+import DriverGhanaCard from './pages/DriverAccount/DriverGhanaCard'
+import DriverContactInfo from './pages/DriverAccount/DriverContactInfo'
+import DriverTransactions from './pages/DriverAccount/DriverTransactions'
+import DriverWithdrawal from './pages/DriverAccount/DriverWithdrawal'
+import DriverPayment from './pages/DriverAccount/DriverPayment'
+
 
 // Global Context for SideNav
 export const SideNavContext = React.createContext({
@@ -101,6 +111,16 @@ function App() {
                 <Route path="/driver-ride-details" element={<DriverRideDetails />} />
                 <Route path="/rate_trip_rider" element={<DriverRateRider />} />
                 <Route path="/driver-favorite-rides" element={<DriverFavoriteRides />} />
+                <Route path="/driver-account" element={<DriverAccountSettings />} />
+                <Route path="/driver-profile" element={<DriverProfile />} />
+                <Route path="/edit-profile" element={<EditProfile />} />
+                <Route path="/driver-documents" element={<DriverDocuments />} />
+                <Route path="/driver-ghana-card" element={<DriverGhanaCard />} />
+                <Route path="/driver-contact-info" element={<DriverContactInfo />} />
+                <Route path="/driver-transactions" element={<DriverTransactions />} />
+                <Route path="/driver-withdrawal" element={<DriverWithdrawal />} />
+                <Route path="/driver-payment" element={<DriverPayment />} />
+
                 <Route path="/miz-miles" element={<MizMilesHome />} />
                 <Route path="/miz-miles-rewards" element={<MizMilesRewards />} />
                 <Route path="/miz-miles-confirm" element={<MizMilesRedeemConfirm />} />

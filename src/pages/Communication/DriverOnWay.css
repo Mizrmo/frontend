@@ -70,6 +70,12 @@
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
+.dow-car-track-icon {
+    width: 24px;
+    height: 48px;
+    object-fit: contain;
+}
+
 .dow-pickup-marker {
     position: absolute;
     display: flex;

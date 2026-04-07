@@ -73,7 +73,7 @@ const DriverDashboard = () => {
                     <div className="dd-section dd-active-ride-section">
                         <div className="dd-section-header">
                             <h2 className="dd-section-title">Active Ride</h2>
-                            <span className="dd-view-all blue">View All</span>
+                            <span className="dd-view-all blue" onClick={() => navigate('/driver_upcoming_trips')}>View All</span>
                         </div>
 
                         <div className="dd-active-cards">
@@ -100,7 +100,7 @@ const DriverDashboard = () => {
                     <div className="dd-section dd-upcoming-ride-section">
                         <div className="dd-section-header">
                             <h2 className="dd-section-title">Upcoming Rides</h2>
-                            <span className="dd-view-all yellow">View All</span>
+                            <span className="dd-view-all yellow" onClick={() => navigate('/driver_upcoming_trips')}>View All</span>
                         </div>
 
                         <div className="dd-upcoming-card">
@@ -146,7 +146,7 @@ const DriverDashboard = () => {
                 </div>
             </div>
 
-            <MainNavigation activeTab="home" />
+            <MainNavigation activeTab="home" isDriver />
         </div>
     );
 };

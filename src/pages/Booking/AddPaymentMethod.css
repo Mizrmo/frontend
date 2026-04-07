@@ -159,7 +159,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 12px auto 0 auto;
+    margin: 32px auto 0 auto;
     cursor: pointer;
     transition: all 0.2s;
 }

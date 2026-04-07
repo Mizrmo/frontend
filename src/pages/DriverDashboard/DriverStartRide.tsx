@@ -13,11 +13,12 @@ import './DriverStartRide.css';
 
 const DriverStartRide = () => {
     const navigate = useNavigate();
-    // Ride Status Life Cycle: 'initial' -> 'arrived' -> 'waiting'
-    const [status, setStatus] = useState<'initial' | 'arrived' | 'waiting'>('initial');
+    // Ride Status Life Cycle: 'initial' -> 'arrived' -> 'in-progress' -> 'complete'
+    const [status, setStatus] = useState<'initial' | 'arrived' | 'in-progress' | 'complete'>('initial');
 
     const handleAccept = () => setStatus('arrived');
-    const handleAtPickup = () => setStatus('waiting');
+    const handleAtPickup = () => setStatus('in-progress');
+    const handleFinishRide = () => navigate('/rate_trip_rider');
     const handleCancel = () => navigate('/driver-home');
 
     return (
@@ -120,7 +121,7 @@ const DriverStartRide = () => {
                         <button className="dsr-action-btn call">
                             <img src={callIconImg} alt="Call" />
                         </button>
-                        <button className="dsr-action-btn msg blue-bg">
+                        <button className="dsr-action-btn msg blue-bg" onClick={() => navigate('/chat')}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF">
                                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                             </svg>
@@ -155,7 +156,10 @@ const DriverStartRide = () => {
                     {status === 'arrived' && (
                         <button className="dsr-secondary-btn" onClick={handleAtPickup}>At Pickup</button>
                     )}
-                    {status === 'waiting' && (
+                    {status === 'in-progress' && (
+                        <button className="dsr-primary-btn" onClick={handleFinishRide}>Finish Ride</button>
+                    )}
+                    {(status === 'initial' || status === 'arrived') && (
                         <button className="dsr-secondary-btn" onClick={handleCancel}>Cancel Ride</button>
                     )}
                 </div>

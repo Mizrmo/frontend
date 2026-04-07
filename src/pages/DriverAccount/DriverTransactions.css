@@ -1,0 +1,285 @@
+/* DriverTransactions.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600&family=Nunito:wght@400;500;600&display=swap');
+
+.dt-screen {
+    width: 393px;
+    height: 1032px;
+    background: #FFFFFF;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+.dt-header {
+    height: 94px;
+    display: flex;
+    align-items: flex-start;
+    padding: 44px 16px 0 16px;
+    justify-content: space-between;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: 2px solid #F1F5F9;
+}
+
+.dt-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    z-index: 2;
+}
+
+.dt-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 47px;
+    z-index: 1;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.dt-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 0 100px;
+}
+
+.dt-content::-webkit-scrollbar {
+    width: 0;
+}
+
+/* Summary Card */
+.dt-summary-card {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.dt-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dt-summary-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.dt-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #EAEAEA;
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #132235;
+}
+
+.dt-earnings-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.dt-wallet-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dt-earnings-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #000000;
+}
+
+.dt-stats-row {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 24px;
+}
+
+.dt-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dt-stat-label {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.dt-stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #000000;
+}
+
+.dt-miles-value {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.dt-miles-num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #000000;
+}
+
+.dt-miles-unit {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.dt-redeem-btn {
+    width: 365px;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    font-family: inherit;
+    display: block;
+    margin: 0 auto;
+}
+
+/* List Section */
+.dt-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.dt-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.dt-group-title {
+    background: #FFFFFF;
+    padding: 16px 24px 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #B8B8B8;
+}
+
+.dt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #F8FAFC;
+}
+
+.dt-item-type {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    color: #000000;
+    margin: 0;
+}
+
+.dt-item-ref {
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #A0A0A0;
+    margin: 0;
+}
+
+.dt-item-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+}
+
+.dt-amt-received {
+    color: #08B783;
+}
+
+.dt-amt-withdrawn, .dt-amt-refund {
+    color: #EAB308;
+}
+
+.dt-footer {
+    width: 100%;
+    background: #FFFFFF;
+    flex-grow: 0;
+    height: 86px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Fix navbar indicator overlap */
+.dt-screen .nav-container-with-indicator {
+    position: relative !important;
+    bottom: unset !important;
+    left: unset !important;
+    width: 100% !important;
+}
+
+.dt-screen .main-nav-container {
+    height: 86px !important;
+    padding: 11px 0 !important;
+    background: #FFFFFF !important;
+}
+
+/* Hide all scrollbars */
+.dt-screen::-webkit-scrollbar,
+.dt-content::-webkit-scrollbar,
+.dt-scroll-area::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none !important;
+}
+
+.dt-screen,
+.dt-content,
+.dt-scroll-area,
+* {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}

@@ -1,0 +1,118 @@
+/* DriverDocuments.css */
+.doc-screen {
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.status-bar-wrapper {
+    width: 100%;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+}
+
+.doc-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    justify-content: space-between;
+    background: #FFFFFF;
+    border-bottom: 1px solid #DDDDDD;
+    position: relative;
+}
+
+.doc-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    z-index: 2;
+}
+
+.doc-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.doc-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 110px;
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-item {
+    border-bottom: 1px solid #EAEAEA;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.doc-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.doc-item-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.doc-item-status {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.doc-item-status.completed {
+    color: #08B783;
+}
+
+.doc-item-status.not-completed {
+    color: #F44336;
+}
+
+.doc-chevron {
+    color: #DDDDDD;
+}
+
+.nice-scroll {
+    scrollbar-width: none;
+}
+.nice-scroll::-webkit-scrollbar {
+    display: none;
+}

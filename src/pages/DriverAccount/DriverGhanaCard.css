@@ -1,7 +1,7 @@
-/* GhanaCard.css */
+/* DriverGhanaCard.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-.gc-screen {
+.dgc-screen {
     width: 393px;
     height: 100vh;
     background: #FFFFFF;
@@ -13,19 +13,20 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.gc-header {
-    height: 94px; /* Matches Figma Status Bar Height */
+.dgc-header {
+    height: 80px;
     display: flex;
     align-items: flex-end;
     padding: 0 16px 20px 16px;
     justify-content: space-between;
     background: #FFFFFF;
+    margin-top: 10px;
+    border-bottom: 2px solid #F1F5F9;
     flex-shrink: 0;
     position: relative;
-    border-bottom: 2px solid #F1F5F9;
 }
 
-.gc-back-btn {
+.dgc-back-btn {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -40,19 +41,7 @@
     z-index: 2;
 }
 
-.gc-skip-btn {
-    background: transparent;
-    border: none;
-    color: #0056B3;
-    font-size: 16px;
-    font-weight: 400;
-    cursor: pointer;
-    padding: 0;
-    font-family: inherit;
-    z-index: 2;
-}
-
-.gc-title {
+.dgc-title {
     font-size: 16px;
     font-weight: 500;
     color: #1A1A1A;
@@ -64,7 +53,7 @@
     z-index: 1;
 }
 
-.gc-content {
+.dgc-content {
     flex: 1;
     overflow-y: auto;
     padding: 24px 14px 20px;
@@ -73,16 +62,16 @@
     gap: 20px;
 }
 
-.gc-form-group {
+.dgc-form-group {
     display: flex;
     flex-direction: column;
-    gap: 11px;
+    gap: 11px; /* Matches Figma Gap 11px */
     width: 100%;
-    align-items: center;
+    align-items: center; /* Center horizontally relative to parent */
 }
 
-.gc-label {
-    width: 365px;
+.dgc-label {
+    width: 365px; /* Matches fixed input width */
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -91,14 +80,14 @@
     display: block;
 }
 
-.gc-input-wrap {
+.dgc-input-wrap {
     position: relative;
     width: 365px;
     display: flex;
     align-items: center;
 }
 
-.gc-input {
+.dgc-input {
     width: 100%;
     height: 45px;
     padding: 0 45px 0 16px;
@@ -112,7 +101,11 @@
     box-sizing: border-box;
 }
 
-.gc-input-icon {
+.dgc-input:focus {
+    border-color: #0080FF;
+}
+
+.dgc-input-icon {
     position: absolute;
     right: 16px;
     display: flex;
@@ -121,15 +114,15 @@
     pointer-events: none;
 }
 
-.gc-image-box {
+.dgc-image-box {
     width: 363px;
     height: 200px;
     background: #D9D9D9; 
-    border-radius: 5px;
+    border-radius: 5px; /* Matches Rectangle 3459 properties */
     position: relative;
 }
 
-.gc-edit-fab {
+.dgc-edit-fab {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -146,7 +139,7 @@
     padding: 0;
 }
 
-.gc-footer {
+.dgc-footer {
     width: 100%;
     background: #FFFFFF;
     flex-shrink: 0;
@@ -157,7 +150,7 @@
     padding-top: 10px;
 }
 
-.gc-save-btn {
+.dgc-save-btn {
     width: 365px;
     height: 45px;
     background: #0056B3;
@@ -177,14 +170,14 @@
 }
 
 /* Ensure MainNavigation sits naturally under the button on this screen */
-.gc-screen .nav-container-with-indicator {
+.dgc-screen .nav-container-with-indicator {
     position: relative !important;
     bottom: unset !important;
     left: unset !important;
     width: 100% !important;
 }
 
-.gc-home-indicator-wrap {
+.dgc-home-indicator-wrap {
     width: 100%;
     background: #FFFFFF;
     display: flex;

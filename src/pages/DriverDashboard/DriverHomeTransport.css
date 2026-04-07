@@ -127,8 +127,8 @@
 /* FAB (ri:add-fill) */
 .hst-fab {
     position: absolute;
-    top: 730px;
-    left: 310px;
+    bottom: 160px;
+    right: 20px;
     width: 68px;
     height: 68px;
     background: #0056B3;
@@ -139,9 +139,9 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 6px 16px rgba(0, 86, 179, 0.4);
-    z-index: 100;
+    z-index: 200;
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .hst-fab:hover {

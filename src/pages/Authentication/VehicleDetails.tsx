@@ -13,6 +13,9 @@ function VehicleDetails() {
     const [dateIssued, setDateIssued] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [ghanaCardNumber, setGhanaCardNumber] = useState('');
+    const [organisationType, setOrganisationType] = useState('');
+    const [otherOrganisation, setOtherOrganisation] = useState('');
+    const [showRelationalInfo, setShowRelationalInfo] = useState(false);
 
     // File Upload Refs
     const licenceFrontRef = useRef<HTMLInputElement>(null);
@@ -107,6 +110,51 @@ function VehicleDetails() {
                                 value={emergencyContact}
                                 onChange={(e) => setEmergencyContact(e.target.value)}
                             />
+                        </div>
+
+                        <div className="form-group gap-10" style={{ marginTop: '8px', marginBottom: '8px' }}>
+                            <div className="label-with-info">
+                                <label className="form-label">Relational Organisation</label>
+                                <div className="info-icon-wrapper" onClick={() => setShowRelationalInfo(!showRelationalInfo)}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#0052B4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M12 16V12" stroke="#0052B4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M12 8H12.01" stroke="#0052B4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="select-dropdown-wrapper">
+                                <select
+                                    className="select-field"
+                                    value={organisationType}
+                                    onChange={(e) => setOrganisationType(e.target.value)}
+                                >
+                                    <option value="" disabled>Select Organisation Type</option>
+                                    <option value="Workplace">Workplace</option>
+                                    <option value="School">School</option>
+                                    <option value="Church">Church</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div className="select-chevron">
+                                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1.5L6 6.5L11 1.5" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                            {organisationType === 'Other' && (
+                                <input
+                                    type="text"
+                                    placeholder="Specify other organisation"
+                                    value={otherOrganisation}
+                                    onChange={(e) => setOtherOrganisation(e.target.value)}
+                                    className="specify-other-input"
+                                />
+                            )}
+                            {showRelationalInfo && (
+                                <div className="info-tooltip-box">
+                                    “Add your relational organisation(workplace, school, or church) you want to be primarily identified with. This helps you find more trusted rides with people you already share a connection with.”
+                                </div>
+                            )}
                         </div>
 
                         <div className="form-group">

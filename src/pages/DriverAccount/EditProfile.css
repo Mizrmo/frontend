@@ -1,0 +1,144 @@
+/* EditProfile.css */
+.ep-screen {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.ep-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px 0; /* Slightly more compact header */
+    flex-shrink: 0;
+    position: relative;
+    min-height: 48px;
+}
+
+.ep-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    color: #1A1A1A;
+    z-index: 2;
+}
+
+.ep-title {
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+.ep-content {
+    flex: 1;
+    overflow: hidden; /* Remove scroll as requested */
+    padding: 10px 20px 110px; /* Space for Nav */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Profile Image Section */
+.ep-avatar-container {
+    position: relative;
+    margin-bottom: 20px; /* Tightening space */
+}
+
+.ep-avatar {
+    width: 90px; /* Reduced for single-screen fit */
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ep-camera-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 30px;
+    height: 30px;
+    background: #E8F0FE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFFFFF;
+}
+
+/* Form Styling */
+.ep-form {
+    width: 100%;
+}
+
+.ep-input-group {
+    width: 100%;
+    margin-bottom: 20px; /* Increased from 12px for better spacing */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ep-input-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #4B5563;
+    padding-left: 2px;
+}
+
+.ep-input {
+    width: 100%;
+    height: 42px; /* Slightly shorter to fit all */
+    border-radius: 21px;
+    border: 1px solid #E5E7EB;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.ep-input:focus {
+    border-color: #0056B3;
+}
+
+/* Save Button */
+.ep-save-btn {
+    width: 365px;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    color: #FFFFFF;
+    margin-top: auto; /* Push to bottom of content area */
+    margin-bottom: 20px; /* Gap from bottom padding/nav */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+/* Scroll handling */
+.nice-scroll {
+    scrollbar-width: none;
+}
+.nice-scroll::-webkit-scrollbar {
+    display: none;
+}

@@ -25,7 +25,7 @@ const Onboarding = () => {
     };
 
     const handleLogin = () => {
-        navigate('/set-password');
+        navigate('/signin');
     };
 
 

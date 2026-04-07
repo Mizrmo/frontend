@@ -34,8 +34,11 @@ const AvailableRideList = () => {
     const handlePay = () => { setPaymentOpen(false); setConfirmOpen(false); setBookingConfirmed(true); };
     // "Done" on payment popup → ride booked popup
     const closeBooking = () => { setBookingConfirmed(false); setRideBooked(true); };
-    // "×" on ride booked popup → back to list
-    const closeRideBooked = () => setRideBooked(false);
+    // "×" on ride booked popup → go to details
+    const closeRideBooked = () => {
+        setRideBooked(false);
+        navigate('/booked-ride-details');
+    };
 
     const blurBg = confirmOpen || paymentOpen || bookingConfirmed || rideBooked;
 

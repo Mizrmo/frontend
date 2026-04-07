@@ -1,0 +1,135 @@
+/* DriverContactInfo.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+.dci-screen {
+    width: 393px;
+    height: 852px; /* Fixed Height as per your Frame properties */
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden; /* No scroll as requested */
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+.dci-header {
+    height: 94px;
+    display: flex;
+    align-items: flex-start; /* Switch to top-alignment */
+    padding: 44px 16px 0 16px; /* Precise 44px top clearance for the 9:41 zone */
+    justify-content: space-between;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: 2px solid #F1F5F9;
+}
+
+.dci-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    z-index: 2;
+}
+
+.dci-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 47px; /* Perfectly aligned with the center of the navigation row */
+    z-index: 1;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.dci-skip-btn {
+    background: transparent;
+    border: none;
+    color: #414141;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    z-index: 2;
+}
+
+.dci-content {
+    flex: 1;
+    padding: 40px 24px 20px;
+}
+
+.dci-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.dci-item {
+    border-bottom: 1px solid #EAEAEA;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dci-item-label {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #5A5A5A;
+    margin: 0 0 4px 0;
+}
+
+.dci-item-value {
+    font-size: 13px;
+    color: #9C9C9C;
+    margin: 0;
+}
+
+.dci-change-btn {
+    background: transparent;
+    border: none;
+    color: #08B783; /* Matching the greenish Change button */
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+}
+
+.dci-footer {
+    width: 100%;
+    background: #FFFFFF;
+    flex-grow: 0;
+    height: 86px; /* Matches driver_main_nav properties */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Force navbar into static container */
+.dci-screen .nav-container-with-indicator {
+    position: relative !important;
+    bottom: unset !important;
+    left: unset !important;
+    width: 100% !important;
+}
+
+.dci-screen .main-nav-container {
+    height: 86px !important;
+    padding: 11px 0 !important;
+    background: #FFFFFF !important;
+}

@@ -1,0 +1,226 @@
+/* DriverWithdrawal.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600&family=Inter:wght@400;500&family=Lato:wght@400&display=swap');
+
+.dw-screen {
+    width: 393px;
+    height: 852px;
+    background: #FFFFFF;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+.dw-header {
+    height: 94px;
+    width: 393px;
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #F5F5F5;
+    background: #FFFFFF;
+}
+
+.dw-back-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.dw-back-btn span {
+    font-size: 16px;
+    color: #414141;
+}
+
+.dw-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    margin-right: 48px; /* Offset for back button to center title */
+}
+
+.dw-content {
+    flex: 1;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dw-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dw-amount-input {
+    width: 365px;
+    height: 45px;
+    border: 1px solid #EAEAEA;
+    border-radius: 30px;
+    padding: 0 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #000000;
+    outline: none;
+    display: block;
+    margin: 0 auto;
+}
+
+.dw-amount-input::placeholder {
+    color: #D0D0D0;
+}
+
+.dw-section-label {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #B8B8B8;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 15px; /* (393 - 363) / 2 */
+}
+
+.dw-payment-list {
+    width: 363px;
+    height: 138px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0 auto;
+}
+
+.dw-payment-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    cursor: pointer;
+}
+
+.dw-item-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dw-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dw-item-name {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    font-family: 'Inter', sans-serif;
+    line-height: 24px;
+}
+
+.dw-item-subtext {
+    font-size: 13.33px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.3);
+    font-family: 'Lato', sans-serif;
+    line-height: 16px;
+}
+
+.dw-withdraw-btn {
+    width: 365px;
+    height: 45px;
+    background: #0056B3;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    margin: 24px auto 0 auto;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 18px;
+}
+
+.dw-footer {
+    height: 86px;
+    background: #FFFFFF;
+    border-top: 1px solid #F5F5F5;
+}
+
+/* Success Modal */
+.dw-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(38, 38, 38, 0.7);
+    z-index: 1000;
+}
+
+.dw-modal-card {
+    width: 361px;
+    height: 355px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 32px 24px;
+    position: absolute;
+    top: 229px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dw-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.dw-success-icon-container {
+    margin-bottom: 24px;
+}
+
+.dw-success-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: #414141;
+    margin-bottom: 12px;
+}
+
+.dw-success-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #757575;
+    line-height: 20px;
+    margin: 0;
+}
+
+.dw-success-amt {
+    color: #08B783;
+    font-weight: 500;
+}

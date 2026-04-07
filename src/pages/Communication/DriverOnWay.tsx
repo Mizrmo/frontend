@@ -5,6 +5,7 @@ import HomeIndicator from '../../components/HomeIndicator';
 import danielAvatar from '../../assets/Ellipse 1192.png';
 import mtnLogo from '../../assets/mtn-logo-img.png';
 import mapBg from '../../assets/Map1.png';
+import trackImg from '../../assets/Track.png';
 import '../Booking/Payment.css';
 import './DriverOnWay.css';
 
@@ -60,11 +61,7 @@ const DriverOnWay = () => {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    <svg width="16" height="32" viewBox="0 0 16 32" fill="black">
-                        <rect x="2" y="4" width="12" height="24" rx="4" />
-                        <rect x="3" y="10" width="10" height="6" fill="#333" rx="1" />
-                        <rect x="4" y="22" width="8" height="1" fill="#333" />
-                    </svg>
+                    <img src={trackImg} alt="Driver Car" className="dow-car-track-icon" />
                 </div>
 
                 <div className="dow-pickup-marker" style={{ top: '56%', left: '44%' }}>

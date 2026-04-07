@@ -1,0 +1,227 @@
+/* DriverProfile.css */
+.dp-screen {
+    width: 393px;
+    height: 878px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.dp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 8px; /* Restored comfortable header padding */
+    flex-shrink: 0;
+}
+
+.dp-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: #1A1A1A;
+}
+
+.dp-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dp-edit-btn {
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    color: #000000;
+    cursor: pointer;
+    line-height: 30px;
+    text-align: right;
+}
+
+.dp-scroll-area {
+    flex: 1;
+    overflow: hidden; /* No scroll as requested */
+    padding-top: 20px; /* Bring the stuffs down from the header */
+    padding-bottom: 110px; 
+}
+
+/* Profile Header Section */
+.dp-profile-info {
+    display: flex;
+    padding: 20px 20px;
+    align-items: center;
+    gap: 15px;
+}
+
+.dp-avatar-container {
+    position: relative;
+}
+
+.dp-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dp-camera-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 28px;
+    height: 28px;
+    background: #E8F0FE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFFFFF;
+}
+
+.dp-user-details h2 {
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0 0 4px 0;
+    color: #000000;
+    line-height: normal;
+}
+
+.dp-user-details p {
+    font-size: 14px;
+    color: #666666;
+    margin: 0 0 8px 0;
+}
+
+.dp-switch-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F3F4F6;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dp-yellow-dot {
+    width: 16px;
+    height: 16px;
+    background: #FFCC00;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Sections */
+.dp-section {
+    border-top: 1px solid #F1F4F9;
+    padding-bottom: 5px;
+}
+
+.dp-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 10px;
+}
+
+.dp-icon-bg {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #E8F0FE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0056B3;
+}
+
+.dp-section-header h3 {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+/* Earnings Grid */
+.dp-earnings-grid {
+    display: flex;
+    padding: 0 20px 20px;
+    justify-content: space-between;
+}
+
+.dp-earning-col {
+    flex: 1;
+    text-align: left;
+}
+
+.dp-earning-col:not(:last-child) {
+    border-right: 1px solid #F1F4F9;
+}
+
+.dp-earning-col:not(:first-child) {
+    padding-left: 12px;
+}
+
+.dp-earning-label {
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.dp-earning-value {
+    font-size: 17px;
+    font-weight: 500;
+    color: #132235;
+    font-family: 'Montserrat', sans-serif;
+    line-height: normal;
+}
+
+/* Table List Section (Rides & DL) */
+.dp-info-list {
+    padding-bottom: 10px;
+}
+
+.dp-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #F1F4F9;
+}
+
+.dp-info-row:last-child {
+    border-bottom: none;
+}
+
+.dp-info-label {
+    font-size: 14px;
+    color: #666666;
+}
+
+.dp-info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+}
+
+/* Custom Scroll Handling */
+.nice-scroll {
+    scrollbar-width: none;
+}
+.nice-scroll::-webkit-scrollbar {
+    display: none;
+}
