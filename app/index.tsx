@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, Animated, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,7 +14,21 @@ const SLIDES = [
 export default function OnboardingScreen() {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const [showSplash, setShowSplash] = useState(true);
+
+
+
+  if (showSplash) {
+    return (
+      <TouchableOpacity 
+        style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#0056B3' }]}
+        activeOpacity={0.9}
+        onPress={() => setShowSplash(false)}
+      >
+        <Image source={require('../assets/onboarding1.png')} style={{ width: width, height: height, position: 'absolute' }} resizeMode="contain" />
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -40,11 +55,7 @@ export default function OnboardingScreen() {
                   <Text style={styles.secBtnText}>Login</Text>
                 </TouchableOpacity>
               </View>
-            ) : (
-                <TouchableOpacity style={styles.skipBtn} onPress={() => setCurrentIndex(2)}>
-                    <Text style={styles.skipText}>Skip</Text>
-                </TouchableOpacity>
-            )}
+            ) : null}
           </View>
         )}
       />
