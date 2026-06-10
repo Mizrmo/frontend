@@ -10,6 +10,7 @@ export default function ProfileLayout() {
       }}
     >
       <Stack.Screen name="settings" />
+      <Stack.Screen name="about-us" />
       <Stack.Screen name="documents" />
       <Stack.Screen name="ghana-card" />
       <Stack.Screen name="mizmiles-rewards" />
@@ -17,6 +18,7 @@ export default function ProfileLayout() {
       <Stack.Screen name="help-support" />
       <Stack.Screen name="payment" />
       <Stack.Screen name="add-payment-method" />
+      <Stack.Screen name="referrals" />
     </Stack>
   );
 }

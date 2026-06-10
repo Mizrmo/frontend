@@ -2,26 +2,35 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { forgotPassword } from '../../src/api/auth';
+import { getApiErrorMessage } from '../../src/api/errors';
 
 export default function SendVerificationScreen() {
   const router = useRouter();
   const [contact, setContact] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendOTP = () => {
-    if (!contact) {
-      Alert.alert('Error', 'Please enter your email or phone number');
+  const handleSendOTP = async () => {
+    if (!contact.trim()) {
+      Alert.alert('Error', 'Please enter your email or phone number.');
       return;
     }
+
     setIsLoading(true);
-    // Simulated API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await forgotPassword({ emailOrPhone: contact.trim() });
       router.push({
         pathname: '/(auth)/verify-otp',
-        params: { identifier: contact, isPasswordReset: 'true' }
+        params: {
+          identifier: contact.trim(),
+          isPasswordReset: 'true',
+        },
       });
-    }, 1500);
+    } catch (error) {
+      Alert.alert('Request failed', getApiErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,6 +53,8 @@ export default function SendVerificationScreen() {
               placeholderTextColor="#ABABAB"
               value={contact}
               onChangeText={setContact}
+              autoCapitalize="none"
+              keyboardType="email-address"
             />
           </View>
 
@@ -67,5 +78,5 @@ const styles = StyleSheet.create({
   inputWrap: { height: 45, borderWidth: 1, borderColor: '#E2E8F0', borderRadius: 100, paddingHorizontal: 20, justifyContent: 'center' },
   input: { fontSize: 15, color: '#1A1A1A', fontFamily: 'Roboto_400Regular' },
   submitBtn: { backgroundColor: '#0056B3', height: 45, borderRadius: 100, justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: 362, alignSelf: 'center' },
-  submitBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular' }
+  submitBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular' },
 });

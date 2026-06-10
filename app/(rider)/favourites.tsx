@@ -1,37 +1,83 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-
-const FAVORITE_RIDES = [
-  { id: 1, title: 'Community One', date: '17 Oct, 24', price: 'GH¢22.00', location: 'Community one' },
-  { id: 2, title: 'Accra Mall', date: '20 Oct, 24', price: 'GH¢45.00', location: 'Accra' },
-  { id: 3, title: 'Tema Station', date: '21 Oct, 24', price: 'GH¢35.00', location: 'Tema' },
-];
-
-const FAVORITE_DRIVERS = [
-  { id: 4, title: 'Daniel Asante', date: '17 Oct, 24', price: 'GH¢22.00', location: 'Community one' },
-  { id: 5, title: 'Beatrice Owusu', date: '18 Oct, 24', price: 'GH¢38.00', location: 'Airport' },
-];
+import { toApiDate } from '../../src/api/trip-types';
+import {
+  getFavouriteRoutes,
+  removeFavouriteRoute,
+  type FavouriteRoute,
+} from '../../src/utils/favourites';
+import { useAuth } from '../../src/context/AuthContext';
 
 export default function RiderFavouriteRidesScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'rides' | 'drivers'>('rides');
+  const { user } = useAuth();
+  const [routes, setRoutes] = useState<FavouriteRoute[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const FaveCard = ({ item }: { item: typeof FAVORITE_RIDES[0] }) => (
-    <TouchableOpacity style={styles.card} onPress={() => router.push('/(rider)/available-rides')}>
+  const loadFavourites = useCallback(async () => {
+    const data = await getFavouriteRoutes(user?.id);
+    setRoutes(data);
+  }, [user?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadFavourites();
+    }, [loadFavourites])
+  );
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await loadFavourites();
+    setIsRefreshing(false);
+  };
+
+  const handleRemove = async (id: string) => {
+    const updated = await removeFavouriteRoute(user?.id, id);
+    setRoutes(updated);
+  };
+
+  const openRoute = (route: FavouriteRoute) => {
+    router.push({
+      pathname: '/(rider)/available-rides',
+      params: {
+        originCity: route.originCity,
+        destinationCity: route.destinationCity,
+        departureDate: toApiDate(new Date()),
+        pickup: route.pickup,
+        dropoff: route.dropoff,
+        seats: '1',
+      },
+    });
+  };
+
+  const RouteCard = ({ item }: { item: FavouriteRoute }) => (
+    <TouchableOpacity style={styles.card} onPress={() => openRoute(item)}>
       <View style={styles.cardIcon}>
         <MaterialCommunityIcons name="routes" size={24} color="#0056B3" />
       </View>
       <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardSub}>{item.date}  •  {item.price}  •  {item.location}</Text>
+        <Text style={styles.cardTitle}>{item.label}</Text>
+        <Text style={styles.cardSub} numberOfLines={1}>
+          {item.pickup} → {item.dropoff}
+        </Text>
       </View>
-      <Ionicons name="heart" size={20} color="#EF4444" />
+      <TouchableOpacity
+        onPress={() => handleRemove(item.id)}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Ionicons name="heart" size={20} color="#EF4444" />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
-
-  const list = activeTab === 'rides' ? FAVORITE_RIDES : FAVORITE_DRIVERS;
 
   return (
     <View style={styles.container}>
@@ -43,34 +89,32 @@ export default function RiderFavouriteRidesScreen() {
         <View style={{ width: 44 }} />
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'rides' && styles.tabActive]}
-          onPress={() => setActiveTab('rides')}
-        >
-          <Text style={[styles.tabText, activeTab === 'rides' && styles.tabTextActive]}>Rides</Text>
-          {activeTab === 'rides' && <View style={styles.tabLine} />}
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'drivers' && styles.tabActive]}
-          onPress={() => setActiveTab('drivers')}
-        >
-          <Text style={[styles.tabText, activeTab === 'drivers' && styles.tabTextActive]}>Drivers</Text>
-          {activeTab === 'drivers' && <View style={styles.tabLine} />}
-        </TouchableOpacity>
-      </View>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+      >
+        <Text style={styles.countLabel}>
+          {routes.length} {routes.length === 1 ? 'Route' : 'Routes'}
+        </Text>
+        {routes.map((item) => (
+          <RouteCard key={item.id} item={item} />
+        ))}
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.countLabel}>{list.length} {activeTab === 'rides' ? 'Rides' : 'Drivers'}</Text>
-        {list.map(item => <FaveCard key={item.id} item={item} />)}
-
-        {list.length === 0 && (
+        {routes.length === 0 ? (
           <View style={styles.empty}>
             <Ionicons name="heart-outline" size={52} color="#CBD5E1" />
-            <Text style={styles.emptyText}>No favourites yet</Text>
+            <Text style={styles.emptyText}>No favourite routes yet</Text>
+            <Text style={styles.emptySub}>
+              Save a route from search by tapping the heart icon next to your pickup and drop-off.
+            </Text>
+            <TouchableOpacity
+              style={styles.searchBtn}
+              onPress={() => router.push('/(rider)/search-location')}
+            >
+              <Text style={styles.searchBtnText}>Search for a ride</Text>
+            </TouchableOpacity>
           </View>
-        )}
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -79,29 +123,65 @@ export default function RiderFavouriteRidesScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   header: {
-    paddingTop: 60, paddingHorizontal: 16, paddingBottom: 12,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F1F5F9',
+    paddingTop: 60,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   backBtn: { width: 44, height: 44, justifyContent: 'center' },
   headerTitle: { fontSize: 22, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
-  tabs: { flexDirection: 'row', backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: 14 },
-  tabActive: {},
-  tabText: { fontSize: 15, color: '#94A3B8', fontFamily: 'Roboto_400Regular' },
-  tabTextActive: { color: '#0056B3', fontFamily: 'Montserrat_500Medium' },
-  tabLine: { position: 'absolute', bottom: 0, height: 3, width: '60%', backgroundColor: '#0056B3', borderRadius: 2 },
   content: { padding: 20, paddingBottom: 40 },
-  countLabel: { fontSize: 13, fontWeight: '700', color: '#94A3B8', letterSpacing: 0.5, marginBottom: 14 },
-  card: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF',
-    padding: 16, borderRadius: 16, marginBottom: 12,
-    elevation: 1, shadowColor: '#000', shadowOpacity: 0.04, shadowOffset: { width: 0, height: 2 },
+  countLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#94A3B8',
+    letterSpacing: 0.5,
+    marginBottom: 14,
   },
-  cardIcon: { width: 44, height: 44, backgroundColor: '#EEF4FF', borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  cardIcon: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#EEF4FF',
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cardContent: { flex: 1, marginLeft: 14 },
   cardTitle: { fontSize: 15, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
   cardSub: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 3 },
-  empty: { alignItems: 'center', paddingTop: 80 },
-  emptyText: { fontSize: 16, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 16 },
+  empty: { alignItems: 'center', paddingTop: 80, paddingHorizontal: 24 },
+  emptyText: { fontSize: 16, color: '#64748B', fontFamily: 'Montserrat_500Medium', marginTop: 16 },
+  emptySub: {
+    fontSize: 14,
+    color: '#94A3B8',
+    fontFamily: 'Roboto_400Regular',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginTop: 8,
+  },
+  searchBtn: {
+    marginTop: 24,
+    backgroundColor: '#0056B3',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 24,
+  },
+  searchBtnText: { color: '#FFF', fontFamily: 'Montserrat_600SemiBold', fontSize: 15 },
 });

@@ -1,34 +1,128 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   View, Text, StyleSheet, TouchableOpacity, ScrollView, 
-  Dimensions, Modal, Image, Platform, ActivityIndicator 
+  Dimensions, Modal, Platform, ActivityIndicator, Alert
 } from 'react-native';
 import { MapView, Marker } from '../../components/Map';
+import { ProfileAvatar } from '../../components/ProfileAvatar';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { storage } from '../../src/api/storage';
+import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { setActiveRole, setPendingDriverOnboarding } from '../../src/api/tokens';
+import { useAuth } from '../../src/context/AuthContext';
+import {
+  formatCurrency,
+  formatDepartureDate,
+  getTripDriverName,
+  getTripPrice,
+  getTripSeatsAvailable,
+  getTripVehicleLabel,
+  searchTrips,
+  type Trip,
+} from '../../src/api/trips';
+import { toApiDate } from '../../src/api/trip-types';
+import { DEFAULT_SEARCH_ROUTE, getLastSearchRoute } from '../../src/utils/lastSearch';
+import { getFavouriteRoutes } from '../../src/utils/favourites';
+import { useProfilePhoto } from '../../src/hooks/useProfilePhoto';
+import { useProfileBio } from '../../src/hooks/useProfileBio';
+import { useDeviceLocation } from '../../src/hooks/useDeviceLocation';
+import { toMapRegion } from '../../src/utils/userLocation';
 
 const { width } = Dimensions.get('window');
 
 export default function RiderHomeScreen() {
   const router = useRouter();
+  const { welcomeBack } = useLocalSearchParams<{ welcomeBack?: string }>();
+  const { signOut, user, switchRole } = useAuth();
+  const { photoUri, reload: reloadProfilePhoto } = useProfilePhoto();
+  const { bio: profileBio, reload: reloadProfileBio } = useProfileBio();
+  const { location: deviceLocation, hasPermission: hasLocationPermission, refresh: refreshDeviceLocation } = useDeviceLocation();
+  const mapRef = useRef<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [rides, setRides] = useState<Trip[]>([]);
+  const [ridesLoading, setRidesLoading] = useState(true);
 
-  const rides = [
-    { id: 1, title: 'Tema Community One', price: 'GH¢22', car: 'Toyota Vitz', seats: '3 seats', time: '5mins away' },
-    { id: 2, title: 'Accra Mall', price: 'GH¢45', car: 'Hyundai Elantra', seats: '4 seats', time: '8mins away' },
-  ];
+  useEffect(() => {
+    if (welcomeBack !== '1') {
+      return;
+    }
+    setShowWelcomeModal(true);
+    const timer = setTimeout(() => setShowWelcomeModal(false), 2800);
+    return () => clearTimeout(timer);
+  }, [welcomeBack]);
+
+  const loadNearbyRides = useCallback(async () => {
+    setRidesLoading(true);
+    try {
+      const lastSearch = await getLastSearchRoute(user?.id);
+      const favourites = await getFavouriteRoutes(user?.id);
+      const route = lastSearch ?? favourites[0] ?? DEFAULT_SEARCH_ROUTE;
+
+      const result = await searchTrips({
+        originCity: route.originCity,
+        destinationCity: route.destinationCity,
+        departureDate: toApiDate(new Date()),
+        limit: 3,
+      });
+      setRides(result.data ?? []);
+    } catch {
+      setRides([]);
+    } finally {
+      setRidesLoading(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadNearbyRides();
+  }, [loadNearbyRides]);
+
+  useEffect(() => {
+    if (menuVisible) {
+      reloadProfilePhoto();
+      reloadProfileBio();
+    }
+  }, [menuVisible, reloadProfilePhoto, reloadProfileBio]);
+
+  useFocusEffect(
+    useCallback(() => {
+      reloadProfilePhoto();
+      reloadProfileBio();
+      refreshDeviceLocation();
+    }, [reloadProfilePhoto, reloadProfileBio, refreshDeviceLocation])
+  );
+
+  useEffect(() => {
+    if (!deviceLocation || !mapRef.current?.animateToRegion) {
+      return;
+    }
+    mapRef.current.animateToRegion(toMapRegion(deviceLocation), 500);
+  }, [deviceLocation]);
+
+  const mapRegion = deviceLocation
+    ? toMapRegion(deviceLocation)
+    : {
+        latitude: 5.6037,
+        longitude: -0.187,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+      };
+
+  const displayName = user?.firstName
+    ? [user.firstName, user.lastName].filter(Boolean).join(' ')
+    : 'Rider';
+
+  const welcomeName = user?.firstName?.trim() || 'there';
 
   const menuItems = [
     { id: '1', title: 'Miz Miles', icon: 'pricetag-outline', route: '/(rider)/mizmiles-rewards' },
     { id: '2', title: 'Trips', icon: 'car-sport-outline', route: '/(rider)/trips' },
-    { id: '3', title: 'Referral', icon: '/(profile)/edit-profile' },
+    { id: '3', title: 'Referral', icon: 'people-outline', route: '/(profile)/referrals' },
     { id: '4', title: 'Payment', icon: 'wallet-outline', route: '/(profile)/payment' },
     { id: '5', title: 'Support', icon: 'headset-outline', route: '/(profile)/help-support' },
-    { id: '6', title: 'About Us', icon: 'information-circle-outline', route: '/(profile)/settings' },
+    { id: '6', title: 'About Us', icon: 'information-circle-outline', route: '/(profile)/about-us' },
   ];
 
   const navigateTo = (route: string) => {
@@ -36,34 +130,68 @@ export default function RiderHomeScreen() {
     router.push(route as any);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setMenuVisible(false);
-    setLoadingText('Logging out...');
-    setLoading(true);
-    try {
-        await storage.removeItem('token');
-        setTimeout(() => {
-            setLoading(false);
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Log Out',
+        style: 'destructive',
+        onPress: async () => {
+          setLoadingText('Logging out...');
+          setLoading(true);
+          try {
+            await signOut();
             router.replace('/(auth)/signin');
-        }, 1500);
-    } catch (e) {
-        setLoading(false);
+          } finally {
+            setLoading(false);
+          }
+        },
+      },
+    ]);
+  };
+
+  const performSwitchToDriver = async () => {
+    setLoadingText('Switching roles...');
+    setLoading(true);
+
+    const result = await switchRole('DRIVER');
+    setLoading(false);
+
+    if (!result.ok) {
+      Alert.alert('Driver mode', result.message ?? 'Unable to switch role.', [
+        { text: 'Cancel', style: 'cancel' },
+        ...(result.actionRoute
+          ? [{
+              text: 'Onboard',
+              onPress: async () => {
+                await setPendingDriverOnboarding(true);
+                await setActiveRole('DRIVER');
+                router.replace(result.actionRoute as any);
+              },
+            }]
+          : []),
+      ]);
+      return;
     }
+
+    setShowSuccessModal(true);
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      router.replace('/(driver)/home');
+    }, 1200);
   };
 
   const handleSwitchProfile = () => {
     setMenuVisible(false);
-    setLoadingText('Switching roles...');
-    setLoading(true);
-    
-    setTimeout(() => {
-        setLoading(false);
-        setShowSuccessModal(true);
-        setTimeout(() => {
-            setShowSuccessModal(false);
-            router.replace('/(driver)/home');
-        }, 2000);
-    }, 1500);
+    Alert.alert(
+      'Switch to Driver',
+      'Are you sure you want to switch to driver mode?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Switch', onPress: () => void performSwitchToDriver() },
+      ]
+    );
   };
 
   return (
@@ -85,9 +213,12 @@ export default function RiderHomeScreen() {
 
                 {/* Profile Section */}
                 <View style={styles.profileSection}>
-                    <Image source={require('../../assets/lady_profile.png')} style={styles.avatar} />
+                    <ProfileAvatar size={64} uri={photoUri} />
                     <View style={styles.profileInfo}>
-                        <Text style={styles.userName}>Daniel Asante</Text>
+                        <Text style={styles.userName}>{displayName}</Text>
+                        {profileBio.trim() ? (
+                          <Text style={styles.userBio} numberOfLines={2}>{profileBio.trim()}</Text>
+                        ) : null}
                         <TouchableOpacity onPress={() => navigateTo('/(profile)/edit-profile')}>
                             <Text style={styles.profileLink}>Profile</Text>
                         </TouchableOpacity>
@@ -137,6 +268,19 @@ export default function RiderHomeScreen() {
         </View>
       </Modal>
 
+      {/* Welcome back modal (after sign in) */}
+      <Modal visible={showWelcomeModal} transparent animationType="fade">
+        <View style={styles.loadingOverlay}>
+          <View style={styles.successBox}>
+            <View style={[styles.successIconBg, styles.welcomeIconBg]}>
+              <Ionicons name="car-sport" size={36} color="#FFF" />
+            </View>
+            <Text style={styles.successTitle}>Welcome back, {welcomeName}!</Text>
+            <Text style={styles.successSub}>Ride with us, your next trip is just a tap away.</Text>
+          </View>
+        </View>
+      </Modal>
+
       {/* Success Modal */}
       <Modal visible={showSuccessModal} transparent animationType="fade">
         <View style={styles.loadingOverlay}>
@@ -150,20 +294,20 @@ export default function RiderHomeScreen() {
         </View>
       </Modal>
 
-      <MapView 
+      <MapView
+        ref={mapRef}
         style={styles.map}
-        initialRegion={{
-          latitude: 5.6037,
-          longitude: -0.1870,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
+        initialRegion={mapRegion}
+        showsUserLocation={hasLocationPermission}
+        showsMyLocationButton={false}
       >
-        <Marker coordinate={{ latitude: 5.6037, longitude: -0.1870 }}>
-           <View style={styles.markerCircle}>
+        {deviceLocation ? (
+          <Marker coordinate={deviceLocation}>
+            <View style={styles.markerCircle}>
               <View style={styles.markerInner} />
-           </View>
-        </Marker>
+            </View>
+          </Marker>
+        ) : null}
       </MapView>
 
       <View style={styles.header}>
@@ -184,24 +328,46 @@ export default function RiderHomeScreen() {
         </TouchableOpacity>
         <Text style={styles.sectionTitle}>Available rides</Text>
         <ScrollView horizontal={false} showsVerticalScrollIndicator={false}>
-          {rides.map(ride => (
-            <TouchableOpacity key={ride.id} style={styles.rideCard}>
-              <View style={styles.rideIcon}>
-                <MaterialCommunityIcons name="car-connected" size={28} color="#0056B3" />
-              </View>
-              <View style={styles.rideInfo}>
-                <View style={styles.rideHeader}>
-                   <Text style={styles.rideTitle}>{ride.title}</Text>
-                   <Text style={styles.ridePrice}>{ride.price}</Text>
+          {ridesLoading ? (
+            <ActivityIndicator color="#0056B3" style={{ marginTop: 12 }} />
+          ) : rides.length === 0 ? (
+            <Text style={styles.emptyRides}>No rides near Tema → Accra today. Tap search to find more.</Text>
+          ) : (
+            rides.map((ride) => (
+              <TouchableOpacity
+                key={ride.id}
+                style={styles.rideCard}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(rider)/available-rides',
+                    params: {
+                      originCity: ride.originCity,
+                      destinationCity: ride.destinationCity,
+                      departureDate: toApiDate(new Date()),
+                      seats: '1',
+                    },
+                  })
+                }
+              >
+                <View style={styles.rideIcon}>
+                  <MaterialCommunityIcons name="car-connected" size={28} color="#0056B3" />
                 </View>
-                <Text style={styles.rideDetails}>{ride.car} • {ride.seats}</Text>
-                <View style={styles.timeRow}>
-                   <Ionicons name="time-outline" size={14} color="#666" />
-                   <Text style={styles.timeText}>{ride.time}</Text>
+                <View style={styles.rideInfo}>
+                  <View style={styles.rideHeader}>
+                    <Text style={styles.rideTitle}>{ride.originCity} → {ride.destinationCity}</Text>
+                    <Text style={styles.ridePrice}>{formatCurrency(getTripPrice(ride))}</Text>
+                  </View>
+                  <Text style={styles.rideDetails}>
+                    {getTripVehicleLabel(ride)} · {getTripSeatsAvailable(ride)} seats · {getTripDriverName(ride)}
+                  </Text>
+                  <View style={styles.timeRow}>
+                    <Ionicons name="time-outline" size={14} color="#666" />
+                    <Text style={styles.timeText}>{formatDepartureDate(ride.departureDate)}</Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            ))
+          )}
         </ScrollView>
       </View>
     </View>
@@ -219,6 +385,7 @@ const styles = StyleSheet.create({
   searchBar: { height: 54, backgroundColor: '#F8FAFC', borderRadius: 27, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 25, borderWidth: 1, borderColor: '#F1F5F9' },
   searchText: { marginLeft: 12, color: '#94A3B8', fontSize: 16, fontFamily: 'Roboto_400Regular' },
   sectionTitle: { fontSize: 16, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A', marginBottom: 16 },
+  emptyRides: { color: '#94A3B8', fontFamily: 'Roboto_400Regular', fontSize: 13, marginBottom: 8 },
   rideCard: { flexDirection: 'row', width: '100%', height: 110, backgroundColor: '#FFF', borderRadius: 20, borderWidth: 1, borderColor: '#F1F5F9', padding: 20, marginBottom: 13, elevation: 1 },
   rideIcon: { width: 48, height: 48, backgroundColor: '#EEF6FF', borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
   rideInfo: { flex: 1, marginLeft: 15 },
@@ -239,7 +406,14 @@ const styles = StyleSheet.create({
   avatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#F1F5F9' },
   profileInfo: { marginLeft: 15 },
   userName: { fontSize: 18, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A' },
-  profileLink: { fontSize: 14, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
+  userBio: {
+    fontSize: 13,
+    fontFamily: 'Roboto_400Regular',
+    color: '#64748B',
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  profileLink: { fontSize: 14, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 4 },
   switchPill: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F8FAFC', paddingVertical: 10, paddingHorizontal: 15, borderRadius: 25, alignSelf: 'flex-start', marginBottom: 30, borderWidth: 1, borderColor: '#F1F5F9' },
   yellowCircle: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#FFCC00', justifyContent: 'center', alignItems: 'center', marginRight: 10 },
   switchText: { fontSize: 14, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
@@ -256,6 +430,13 @@ const styles = StyleSheet.create({
   
   successBox: { backgroundColor: '#FFF', padding: 40, borderRadius: 32, alignItems: 'center', elevation: 12, width: '80%' },
   successIconBg: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#10B981', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  successTitle: { fontSize: 22, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A', marginBottom: 10 },
+  welcomeIconBg: { backgroundColor: '#0056B3' },
+  successTitle: {
+    fontSize: 22,
+    fontFamily: 'Montserrat_700Bold',
+    color: '#1A1A1A',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   successSub: { fontSize: 14, fontFamily: 'Roboto_400Regular', color: '#94A3B8', textAlign: 'center' }
 });

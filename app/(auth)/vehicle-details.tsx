@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ScrollView, Alert, Image, Dimensions
+  KeyboardAvoidingView, Platform, ScrollView, Alert, Image, Dimensions, ActivityIndicator
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
+import { applyForDriver, addDriverVehicle, uploadDriverDocuments } from '../../src/api/drivers';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { clearPendingDriverOnboarding, setActiveRole } from '../../src/api/tokens';
+import { mapGender, parseDateParam, toApiDateString } from '../../src/api/upload';
 
 const { width } = Dimensions.get('window');
 
 export default function VehicleDetailsScreen() {
   const router = useRouter();
+  const { dob: dobParam } = useLocalSearchParams<{ dob?: string }>();
+  const initialDob = useMemo(
+    () => parseDateParam(typeof dobParam === 'string' ? dobParam : undefined) ?? new Date(),
+    [dobParam]
+  );
   const [gender, setGender] = useState('Male');
   const [formData, setFormData] = useState({
-    dob: new Date(),
+    dob: initialDob,
     emergencyContact: '',
     licenceNumber: '',
     dateIssued: new Date(),
@@ -30,7 +39,14 @@ export default function VehicleDetailsScreen() {
     ghanaBack: null,
   });
 
-  const [showPicker, setShowPicker] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [vehicleData, setVehicleData] = useState({
+    make: '',
+    model: '',
+    year: '2018',
+    color: '',
+    licensePlate: '',
+  });
 
   const pickImage = async (key: string) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -42,7 +58,7 @@ export default function VehicleDetailsScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
-      quality: 0.8,
+      quality: 0.5,
     });
 
     if (!result.canceled) {
@@ -61,15 +77,68 @@ export default function VehicleDetailsScreen() {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   };
 
-  const handleRegister = () => {
-    // Basic validation for simulation
-    const mandatory = ['licenceFront', 'licenceBack', 'ghanaFront', 'ghanaBack'];
-    const missing = mandatory.filter(k => !images[k]);
-    if (missing.length > 0) {
-        // Just warning but allowing simulation to pass for now if wanted? 
-        // User wants to test all screens so let's allow it but show warning.
+  const [showPicker, setShowPicker] = useState<string | null>(null);
+
+  useEffect(() => {
+    const parsed = parseDateParam(typeof dobParam === 'string' ? dobParam : undefined);
+    if (parsed) {
+      setFormData((prev) => ({ ...prev, dob: parsed }));
     }
-    router.replace('/(auth)/success');
+  }, [dobParam]);
+
+  const handleRegister = async () => {
+    if (!formData.emergencyContact.trim() || !formData.licenceNumber.trim() || !formData.ghanaCardNumber.trim()) {
+      Alert.alert('Required', 'Please complete all required driver fields.');
+      return;
+    }
+    if (!vehicleData.make.trim() || !vehicleData.model.trim() || !vehicleData.licensePlate.trim()) {
+      Alert.alert('Required', 'Please enter your vehicle make, model, and license plate.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await applyForDriver({
+        dateOfBirth: toApiDateString(formData.dob),
+        gender: mapGender(gender),
+        emergencyContact: formData.emergencyContact.trim(),
+        licenseNumber: formData.licenceNumber.trim(),
+        licenseIssuedDate: toApiDateString(formData.dateIssued),
+        licenseExpiryDate: toApiDateString(formData.expiryDate),
+        ghanaCardNumber: formData.ghanaCardNumber.trim(),
+      });
+
+      await addDriverVehicle({
+        make: vehicleData.make.trim(),
+        model: vehicleData.model.trim(),
+        year: Number(vehicleData.year) || 2018,
+        color: vehicleData.color.trim() || 'Silver',
+        licensePlate: vehicleData.licensePlate.trim(),
+      });
+
+      await uploadDriverDocuments({
+        licenseFront: images.licenceFront,
+        licenseBack: images.licenceBack,
+        ghanaCardFront: images.ghanaFront,
+        ghanaCardBack: images.ghanaBack,
+      });
+
+      await clearPendingDriverOnboarding();
+      await setActiveRole('DRIVER');
+
+      router.replace('/(auth)/success');
+    } catch (error) {
+      const message = getApiErrorMessage(error);
+      const hint =
+        message.toLowerCase().includes('unauthorized')
+          ? ' Your session may have expired — sign in and try submitting driver details again.'
+          : message.toLowerCase().includes('too large') || message.includes('413')
+            ? ' Try photos under 1 MB each, or skip optional uploads if you added extra images.'
+            : '';
+      Alert.alert('Registration failed', `${message}${hint}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderUploadBox = (label: string, key: string) => (
@@ -113,7 +182,12 @@ export default function VehicleDetailsScreen() {
         <View style={{ width: 60 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         
         {/* Date of Birth */}
         <View style={styles.formGroup}>
@@ -250,12 +324,72 @@ export default function VehicleDetailsScreen() {
           {renderUploadBox('Back Side of Card', 'ghanaBack')}
         </View>
 
-        {/* Register Button */}
-        <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
-          <Text style={styles.registerBtnText}>Register</Text>
-        </TouchableOpacity>
+        <Text style={styles.vehicleSectionTitle}>Vehicle Details</Text>
+        <View style={styles.vehicleFields}>
+          <View style={styles.inputField}>
+            <TextInput
+              style={styles.input}
+              placeholder="Make (e.g. Toyota)"
+              placeholderTextColor="#D0D0D0"
+              value={vehicleData.make}
+              onChangeText={(t) => setVehicleData({ ...vehicleData, make: t })}
+            />
+          </View>
+          <View style={styles.inputField}>
+            <TextInput
+              style={styles.input}
+              placeholder="Model (e.g. Corolla)"
+              placeholderTextColor="#D0D0D0"
+              value={vehicleData.model}
+              onChangeText={(t) => setVehicleData({ ...vehicleData, model: t })}
+            />
+          </View>
+          <View style={styles.vehicleRow}>
+            <View style={styles.vehicleRowField}>
+              <View style={styles.inputField}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Year"
+                  keyboardType="number-pad"
+                  value={vehicleData.year}
+                  onChangeText={(t) => setVehicleData({ ...vehicleData, year: t })}
+                />
+              </View>
+            </View>
+            <View style={styles.vehicleRowField}>
+              <View style={styles.inputField}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Color"
+                  placeholderTextColor="#D0D0D0"
+                  value={vehicleData.color}
+                  onChangeText={(t) => setVehicleData({ ...vehicleData, color: t })}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.inputField}>
+            <TextInput
+              style={styles.input}
+              placeholder="License Plate (GR-1234-20)"
+              autoCapitalize="characters"
+              value={vehicleData.licensePlate}
+              onChangeText={(t) => setVehicleData({ ...vehicleData, licensePlate: t })}
+            />
+          </View>
+        </View>
 
       </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.registerBtn} onPress={handleRegister} disabled={isLoading}>
+          {isLoading ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.registerBtnText}>Register</Text>
+          )}
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -276,7 +410,8 @@ const styles = StyleSheet.create({
   backText: { fontSize: 16, color: '#1A1A1A', marginLeft: 4, fontFamily: 'Roboto_400Regular' },
   headerTitle: { fontSize: 18, fontWeight: '600', color: '#1A1A1A', fontFamily: 'Montserrat_600SemiBold' },
   
-  scrollContent: { paddingHorizontal: 16, paddingBottom: 40 },
+  scrollView: { flex: 1 },
+  scrollContent: { paddingHorizontal: 16, paddingBottom: 24 },
   
   formGroup: { marginBottom: 16 },
   formLabel: { fontSize: 14, color: '#1A1A1A', marginBottom: 8, fontFamily: 'Roboto_400Regular', fontWeight: '500' },
@@ -323,10 +458,30 @@ const styles = StyleSheet.create({
   },
   uploadText: { fontSize: 14, color: '#0052B4', fontWeight: '500', marginBottom: 2 },
   uploadHint: { fontSize: 12, color: '#94A3B8' },
-  
+
+  vehicleSectionTitle: {
+    fontSize: 14,
+    color: '#1A1A1A',
+    marginTop: 24,
+    marginBottom: 12,
+    fontFamily: 'Roboto_400Regular',
+    fontWeight: '500',
+  },
+  vehicleFields: { gap: 14, marginBottom: 8 },
+  vehicleRow: { flexDirection: 'row', gap: 12 },
+  vehicleRowField: { flex: 1 },
+
+  footer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 28 : 16,
+    backgroundColor: '#FFF',
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
   registerBtn: {
     backgroundColor: '#0052B4', height: 50, borderRadius: 25,
-    justifyContent: 'center', alignItems: 'center', marginTop: 10
+    justifyContent: 'center', alignItems: 'center',
   },
   registerBtnText: { color: '#FFF', fontSize: 16, fontWeight: '600', fontFamily: 'Roboto_400Regular' }
 });

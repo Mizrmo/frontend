@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { getHomeRouteForUser, useAuth } from '../../src/context/AuthContext';
 
 export default function SuccessScreen() {
   const router = useRouter();
+  const { user, activeRole } = useAuth();
+  const isDriver = activeRole === 'DRIVER' || user?.role === 'DRIVER';
+  const homeRoute = getHomeRouteForUser(user, activeRole);
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {/* Success Icon */}
         <View style={styles.iconWrap}>
           <Ionicons name="checkmark" size={48} color="#FFFFFF" />
         </View>
@@ -17,18 +20,28 @@ export default function SuccessScreen() {
         <Text style={styles.title}>Account Created!</Text>
 
         <Text style={styles.message}>
-          Welcome to Mizrmo! Your account has been successfully created. Start booking rides today.
+          {isDriver
+            ? 'Welcome to Mizrmo! Your driver account is ready. Head to your dashboard to advertise rides.'
+            : 'Welcome to Mizrmo! Your account has been successfully created. Start booking rides today.'}
         </Text>
 
         <TouchableOpacity
           style={styles.btn}
           onPress={() => {
-            // In a real app we'd check the user role here
-            router.replace('/(rider)/enable-location');
+            router.replace(isDriver ? homeRoute : '/(rider)/enable-location');
           }}
         >
-          <Text style={styles.btnText}>Get Started</Text>
+          <Text style={styles.btnText}>{isDriver ? 'Go to Dashboard' : 'Get Started'}</Text>
         </TouchableOpacity>
+
+        {user ? (
+          <TouchableOpacity
+            style={styles.secondaryBtn}
+            onPress={() => router.replace(homeRoute)}
+          >
+            <Text style={styles.secondaryBtnText}>Skip to Home</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );
@@ -46,4 +59,6 @@ const styles = StyleSheet.create({
   message: { fontSize: 16, color: '#64748B', textAlign: 'center', lineHeight: 24, marginBottom: 40, fontFamily: 'Roboto_400Regular' },
   btn: { backgroundColor: '#0056B3', width: '100%', height: 55, borderRadius: 28, justifyContent: 'center', alignItems: 'center' },
   btnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular', fontWeight: '600' },
+  secondaryBtn: { marginTop: 16, paddingVertical: 12 },
+  secondaryBtnText: { color: '#0056B3', fontSize: 15, fontFamily: 'Roboto_400Regular' },
 });

@@ -6,21 +6,47 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { login } from '../../src/api/auth';
-import { storage } from '../../src/api/storage';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { useAuth } from '../../src/context/AuthContext';
+import { resolvePostAuthRoute } from '../../src/utils/postAuthRoute';
 
 export default function SignInScreen() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [formData, setFormData] = useState({ identifier: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
+    if (!formData.identifier.trim() || !formData.password) {
+      Alert.alert('Required', 'Please enter your email or phone number and password.');
+      return;
+    }
+
     setIsLoading(true);
-    // Simulation mode
-    setTimeout(() => {
-        setIsLoading(false);
-        router.replace('/(rider)/home');
-    }, 1000);
+    try {
+      const data = await login({
+        emailOrPhone: formData.identifier.trim(),
+        password: formData.password,
+      });
+      await signIn(
+        { accessToken: data.accessToken, refreshToken: data.refreshToken },
+        data.user
+      );
+      const route = await resolvePostAuthRoute(data.user);
+      if (route === '/(rider)/home') {
+        router.replace({
+          pathname: '/(rider)/home',
+          params: { welcomeBack: '1' },
+        });
+      } else {
+        router.replace(route);
+      }
+    } catch (error) {
+      Alert.alert('Sign in failed', getApiErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

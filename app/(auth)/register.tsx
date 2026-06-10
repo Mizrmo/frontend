@@ -6,12 +6,19 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { initiateRegistration } from '../../src/api/auth';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { clearAuthSession } from '../../src/api/tokens';
+import { formatGhanaPhoneNumber, splitFullName } from '../../src/api/utils';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ 
-    name: '', email: '', phone: '', 
-    dob: new Date() 
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    referralCode: '',
+    dob: new Date(),
   });
   const [agreed, setAgreed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,29 +35,49 @@ export default function RegisterScreen() {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
   };
 
-  const handleSignUp = () => {
-    if (!formData.name || !formData.phone) {
+  const handleSignUp = async () => {
+    if (!formData.name.trim() || !formData.phone.trim()) {
       Alert.alert('Required', 'Please fill in your name and phone number.');
+      return;
+    }
+    if (!formData.email.trim()) {
+      Alert.alert('Required', 'Please enter your email address.');
       return;
     }
     if (!agreed) {
       Alert.alert('Terms', 'Please agree to the Terms of service and Privacy policy.');
       return;
     }
+
+    const { firstName, lastName } = splitFullName(formData.name);
+    const phoneNumber = formatGhanaPhoneNumber(formData.phone);
+
     setIsLoading(true);
-    // Simulation mode for testing
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push({
-        pathname: '/(auth)/verify-otp' as any,
-        params: { 
-            name: formData.name, 
-            phone: formData.phone,
-            email: formData.email,
-            dob: formatDate(formData.dob)
-        }
+    try {
+      await clearAuthSession();
+      await initiateRegistration({
+        firstName,
+        lastName,
+        email: formData.email.trim(),
+        phoneNumber,
+        roleIntent: 'RIDER',
       });
-    }, 1000);
+
+      router.push({
+        pathname: '/(auth)/verify-otp',
+        params: {
+          phone: phoneNumber,
+          email: formData.email.trim(),
+          name: formData.name.trim(),
+          referralCode: formData.referralCode.trim(),
+          dob: formData.dob.toISOString(),
+        },
+      });
+    } catch (error) {
+      Alert.alert('Registration failed', getApiErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -105,6 +132,17 @@ export default function RegisterScreen() {
               </Text>
               <Ionicons name="calendar-outline" size={18} color="#C0C0C0" />
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.inputPill}>
+            <TextInput
+              style={styles.input}
+              placeholder="Referral code (optional)"
+              placeholderTextColor="#C0C0C0"
+              autoCapitalize="characters"
+              value={formData.referralCode}
+              onChangeText={(t) => setFormData({ ...formData, referralCode: t })}
+            />
           </View>
 
           {/* Phone with flag */}

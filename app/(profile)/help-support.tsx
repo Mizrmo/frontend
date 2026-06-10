@@ -1,7 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Linking, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Linking,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../src/context/AuthContext';
+import { getConfigString, getPublicConfig } from '../../src/api/config';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { createSupportTicket, getMySupportTickets, type SupportTicket } from '../../src/api/support';
 
 const faqs = [
   { id: 1, q: 'How do I book a ride?', a: 'Tap "Book Ride" on your home screen, enter your pickup and drop-off location, then select an available driver.' },
@@ -14,12 +29,66 @@ const faqs = [
 
 export default function HelpSupportScreen() {
   const router = useRouter();
+  const { activeRole } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [supportPhone, setSupportPhone] = useState('+233000000000');
+  const [supportEmail, setSupportEmail] = useState('support@mizrmo.com');
+  const [ticketSubject, setTicketSubject] = useState('');
+  const [ticketMessage, setTicketMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [myTickets, setMyTickets] = useState<SupportTicket[]>([]);
+  const [ticketsLoading, setTicketsLoading] = useState(true);
+
+  const loadTickets = () => {
+    setTicketsLoading(true);
+    getMySupportTickets()
+      .then(setMyTickets)
+      .catch(() => setMyTickets([]))
+      .finally(() => setTicketsLoading(false));
+  };
+
+  useEffect(() => {
+    loadTickets();
+    getPublicConfig()
+      .then((config) => {
+        setSupportPhone(
+          getConfigString(config, ['SUPPORT_PHONE', 'supportPhone', 'support_phone'], supportPhone)
+        );
+        setSupportEmail(
+          getConfigString(config, ['SUPPORT_EMAIL', 'supportEmail', 'support_email'], supportEmail)
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   const filtered = faqs.filter(f =>
     f.q.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleCreateTicket = async () => {
+    if (!ticketSubject.trim() || !ticketMessage.trim()) {
+      Alert.alert('Support', 'Please enter a subject and message.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await createSupportTicket({
+        subject: ticketSubject.trim(),
+        description: ticketMessage.trim(),
+        category: 'OTHER',
+      });
+      Alert.alert('Ticket submitted', 'Our team will respond shortly.');
+      setTicketSubject('');
+      setTicketMessage('');
+      loadTickets();
+    } catch (error) {
+      Alert.alert('Could not submit ticket', getApiErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -83,7 +152,7 @@ export default function HelpSupportScreen() {
         <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Contact Us</Text>
         <TouchableOpacity
           style={styles.contactCard}
-          onPress={() => Linking.openURL('tel:+233000000000')}
+          onPress={() => Linking.openURL(`tel:${supportPhone}`)}
         >
           <View style={styles.contactIconBox}>
             <Ionicons name="call" size={22} color="#0056B3" />
@@ -97,27 +166,77 @@ export default function HelpSupportScreen() {
 
         <TouchableOpacity
           style={styles.contactCard}
-          onPress={() => Linking.openURL('mailto:support@mizrmo.com')}
+          onPress={() => Linking.openURL(`mailto:${supportEmail}`)}
         >
           <View style={styles.contactIconBox}>
             <Ionicons name="mail" size={22} color="#0056B3" />
           </View>
           <View style={styles.contactInfo}>
             <Text style={styles.contactTitle}>Email Support</Text>
-            <Text style={styles.contactSub}>support@mizrmo.com</Text>
+            <Text style={styles.contactSub}>{supportEmail}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.contactCard}>
-          <View style={styles.contactIconBox}>
-            <Ionicons name="chatbubbles" size={22} color="#0056B3" />
-          </View>
-          <View style={styles.contactInfo}>
-            <Text style={styles.contactTitle}>Live Chat</Text>
-            <Text style={styles.contactSub}>Chat with a support agent</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>My tickets</Text>
+        {ticketsLoading ? (
+          <ActivityIndicator color="#0056B3" style={{ marginBottom: 16 }} />
+        ) : myTickets.length === 0 ? (
+          <Text style={styles.ticketsEmpty}>No support tickets yet.</Text>
+        ) : (
+          myTickets.map((ticket) => (
+            <TouchableOpacity
+              key={ticket.id}
+              style={styles.ticketRow}
+              onPress={() =>
+                router.push({
+                  pathname: activeRole === 'DRIVER' ? '/(driver)/chat' : '/(rider)/chat',
+                  params: { ticketId: ticket.id },
+                } as never)
+              }
+            >
+              <View style={styles.ticketRowInfo}>
+                <Text style={styles.ticketSubject} numberOfLines={1}>
+                  {ticket.subject ?? 'Support ticket'}
+                </Text>
+                <Text style={styles.ticketMeta}>
+                  {(ticket.status ?? 'open').replace('_', ' ')}
+                  {ticket.createdAt
+                    ? ` · ${new Date(ticket.createdAt).toLocaleDateString()}`
+                    : ''}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+            </TouchableOpacity>
+          ))
+        )}
+
+        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Submit a ticket</Text>
+        <TextInput
+          style={styles.ticketInput}
+          placeholder="Subject"
+          placeholderTextColor="#94A3B8"
+          value={ticketSubject}
+          onChangeText={setTicketSubject}
+        />
+        <TextInput
+          style={[styles.ticketInput, styles.ticketMessage]}
+          placeholder="Describe your issue..."
+          placeholderTextColor="#94A3B8"
+          value={ticketMessage}
+          onChangeText={setTicketMessage}
+          multiline
+        />
+        <TouchableOpacity
+          style={styles.submitTicketBtn}
+          onPress={handleCreateTicket}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.submitTicketText}>Submit ticket</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -169,4 +288,53 @@ const styles = StyleSheet.create({
   contactInfo: { flex: 1, marginLeft: 14 },
   contactTitle: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
   contactSub: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 3 },
+  ticketInput: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    paddingHorizontal: 16,
+    height: 52,
+    marginBottom: 12,
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 15,
+    color: '#1A1A1A',
+  },
+  ticketMessage: { height: 120, paddingTop: 14, textAlignVertical: 'top' },
+  submitTicketBtn: {
+    backgroundColor: '#0056B3',
+    height: 52,
+    borderRadius: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 20,
+  },
+  submitTicketText: { color: '#FFF', fontFamily: 'Montserrat_600SemiBold', fontSize: 15 },
+  ticketsEmpty: {
+    fontSize: 14,
+    color: '#94A3B8',
+    fontFamily: 'Roboto_400Regular',
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  ticketRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  ticketRowInfo: { flex: 1, marginRight: 8 },
+  ticketSubject: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
+  ticketMeta: {
+    fontSize: 12,
+    color: '#94A3B8',
+    fontFamily: 'Roboto_400Regular',
+    marginTop: 3,
+    textTransform: 'capitalize',
+  },
 });

@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Platform, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { storage } from '../../src/api/storage';
+import { useAuth } from '../../src/context/AuthContext';
+import { getMilesBalance, getMizMilesWallet } from '../../src/api/mizMiles';
+import { getConfigString, getPublicConfig } from '../../src/api/config';
 
 interface SettingItem {
   id: string;
@@ -13,54 +15,129 @@ interface SettingItem {
   route?: string;
 }
 
-interface SettingSection {
-  title: string;
-  items: SettingItem[];
-}
-
-const sections: SettingSection[] = [
-  {
-    title: 'ACCOUNT',
-    items: [
-      { id: 'edit', label: 'Edit Profile', sub: 'Change name, photo, and bio', icon: 'person-outline', route: '/(profile)/edit-profile' },
-      { id: 'miles', label: 'Miz Miles', sub: 'You have 1,240 points', icon: 'card-giftcard', route: '/(rider)/mizmiles-rewards' },
-      { id: 'document', label: 'Documents', sub: 'Manage licenses and verification', icon: 'description', route: '/(profile)/documents' },
-      { id: 'payment', label: 'Payment Methods', sub: 'Add or manage cards', icon: 'credit-card', route: '/(profile)/payment' },
-    ]
-  },
-  {
-    title: 'SUPPORT',
-    items: [
-      { id: 'help', label: 'Help & Support', sub: 'FAQs and contact support', icon: 'help-outline', route: '/(profile)/help-support' },
-      { id: 'terms', label: 'Terms and Policies', sub: 'Our legal agreements', icon: 'article' },
-      { id: 'privacy', label: 'Privacy Settings', sub: 'Manage your data', icon: 'lock-outline' },
-    ]
-  },
-  {
-    title: 'SESSION',
-    items: [
-      { id: 'logout', label: 'Log Out', sub: 'Sign out of your account', icon: 'logout', danger: true },
-    ]
-  }
-];
-
 export default function AccountSettingsScreen() {
   const router = useRouter();
+  const { signOut, activeRole } = useAuth();
+  const [milesBalance, setMilesBalance] = useState<number | null>(null);
+  const [termsUrl, setTermsUrl] = useState('https://mizrmo.com/terms');
+  const [privacyUrl, setPrivacyUrl] = useState('https://mizrmo.com/privacy');
+
+  useEffect(() => {
+    getPublicConfig()
+      .then((config) => {
+        setTermsUrl(
+          getConfigString(config, ['TERMS_URL', 'termsUrl', 'terms_url'], termsUrl)
+        );
+        setPrivacyUrl(
+          getConfigString(config, ['PRIVACY_URL', 'privacyUrl', 'privacy_url'], privacyUrl)
+        );
+      })
+      .catch(() => {});
+
+    getMizMilesWallet()
+      .then((wallet) => setMilesBalance(getMilesBalance(wallet)))
+      .catch(() => setMilesBalance(null));
+  }, []);
+
+  const mizMilesRoute =
+    activeRole === 'DRIVER' ? '/(driver)/mizmiles-rewards' : '/(rider)/mizmiles-rewards';
+
+  const sections: { title: string; items: SettingItem[] }[] = [
+    {
+      title: 'ACCOUNT',
+      items: [
+        {
+          id: 'edit',
+          label: 'Edit Profile',
+          sub: 'Change name, photo, and contact info',
+          icon: 'person-outline',
+          route: '/(profile)/edit-profile',
+        },
+        {
+          id: 'miles',
+          label: 'Miz Miles',
+          sub:
+            milesBalance != null
+              ? `You have ${milesBalance.toLocaleString()} points`
+              : 'View rewards and redeem miles',
+          icon: 'card-giftcard',
+          route: mizMilesRoute,
+        },
+        {
+          id: 'referral',
+          label: 'Referrals',
+          sub: 'Invite friends and earn bonus miles',
+          icon: 'people-outline',
+          route: '/(profile)/referrals',
+        },
+        {
+          id: 'document',
+          label: 'Documents',
+          sub: 'Manage licenses and verification',
+          icon: 'description',
+          route: '/(profile)/documents',
+        },
+        {
+          id: 'payment',
+          label: 'Payment Methods',
+          sub: activeRole === 'DRIVER' ? 'Payout account for earnings' : 'How you pay for rides',
+          icon: 'credit-card',
+          route: '/(profile)/payment',
+        },
+      ],
+    },
+    {
+      title: 'SUPPORT',
+      items: [
+        {
+          id: 'help',
+          label: 'Help & Support',
+          sub: 'FAQs and contact support',
+          icon: 'help-outline',
+          route: '/(profile)/help-support',
+        },
+        { id: 'terms', label: 'Terms and Policies', sub: 'Our legal agreements', icon: 'article' },
+        { id: 'privacy', label: 'Privacy Settings', sub: 'Manage your data', icon: 'lock-outline' },
+      ],
+    },
+    {
+      title: 'SESSION',
+      items: [
+        { id: 'logout', label: 'Log Out', sub: 'Sign out of your account', icon: 'logout', danger: true },
+      ],
+    },
+  ];
 
   const handleItemPress = async (item: SettingItem) => {
     if (item.id === 'logout') {
       Alert.alert('Log Out', 'Are you sure you want to log out?', [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Log Out', style: 'destructive', onPress: async () => {
-            await storage.removeItem('token');
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: async () => {
+            await signOut();
             router.replace('/(auth)/signin');
-          }
-        }
+          },
+        },
       ]);
       return;
     }
-    if (item.route) router.push(item.route as any);
+    if (item.id === 'terms') {
+      Linking.openURL(termsUrl).catch(() =>
+        Alert.alert('Link unavailable', 'Could not open terms and policies.')
+      );
+      return;
+    }
+    if (item.id === 'privacy') {
+      Linking.openURL(privacyUrl).catch(() =>
+        Alert.alert('Link unavailable', 'Could not open privacy settings.')
+      );
+      return;
+    }
+    if (item.route) {
+      router.push(item.route as never);
+    }
   };
 
   return (
@@ -77,31 +154,24 @@ export default function AccountSettingsScreen() {
         {sections.map((section, idx) => (
           <View key={idx} style={styles.section}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
-            <View style={styles.card}>
-              {section.items.map((item, i) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={[styles.item, i < section.items.length - 1 && styles.itemBorder]}
-                  onPress={() => handleItemPress(item)}
-                >
-                  <View style={[styles.iconBox, item.danger && styles.iconBoxDanger]}>
-                    <MaterialIcons
-                      name={item.icon as any}
-                      size={22}
-                      color={item.danger ? '#EF4444' : '#0056B3'}
-                    />
-                  </View>
-                  <View style={styles.labelContainer}>
-                    <Text style={[styles.label, item.danger && styles.labelDanger]}>{item.label}</Text>
-                    <Text style={styles.sublabel}>{item.sub}</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
-                </TouchableOpacity>
-              ))}
-            </View>
+            {section.items.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.item}
+                onPress={() => handleItemPress(item)}
+              >
+                <View style={[styles.iconBox, item.danger && styles.iconBoxDanger]}>
+                  <MaterialIcons name={item.icon as any} size={22} color={item.danger ? '#EF4444' : '#0056B3'} />
+                </View>
+                <View style={styles.itemInfo}>
+                  <Text style={[styles.itemLabel, item.danger && styles.dangerText]}>{item.label}</Text>
+                  <Text style={styles.itemSub}>{item.sub}</Text>
+                </View>
+                {!item.danger && <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />}
+              </TouchableOpacity>
+            ))}
           </View>
         ))}
-        <Text style={styles.footerVersion}>Mizrmo v1.0.0</Text>
       </ScrollView>
     </View>
   );
@@ -110,23 +180,49 @@ export default function AccountSettingsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAFAFB' },
   header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? 60 : 40, paddingHorizontal: 16, paddingBottom: 20, backgroundColor: '#FFF',
-    borderBottomWidth: 1, borderBottomColor: '#F1F5F9'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   backBtn: { width: 44, height: 44, justifyContent: 'center' },
   headerTitle: { fontSize: 18, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A' },
   content: { padding: 20, paddingBottom: 40 },
-  section: { marginBottom: 25 },
-  sectionTitle: { fontSize: 11, fontFamily: 'Montserrat_700Bold', color: '#94A3B8', letterSpacing: 1.2, marginBottom: 12, marginLeft: 4 },
-  card: { backgroundColor: '#FFF', borderRadius: 20, overflow: 'hidden', borderWidth: 1, borderColor: '#F1F5F9' },
-  item: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  itemBorder: { borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  iconBox: { width: 42, height: 42, backgroundColor: '#EEF6FF', borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
+  section: { marginBottom: 28 },
+  sectionTitle: {
+    fontSize: 12,
+    fontFamily: 'Montserrat_700Bold',
+    color: '#94A3B8',
+    letterSpacing: 1.2,
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  iconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#EEF6FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   iconBoxDanger: { backgroundColor: '#FEF2F2' },
-  labelContainer: { flex: 1, marginLeft: 14 },
-  label: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
-  labelDanger: { color: '#EF4444' },
-  sublabel: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
-  footerVersion: { textAlign: 'center', fontSize: 12, color: '#CBD5E1', fontFamily: 'Roboto_400Regular', marginTop: 20 }
+  itemInfo: { flex: 1, marginLeft: 14 },
+  itemLabel: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
+  itemSub: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
+  dangerText: { color: '#EF4444' },
 });

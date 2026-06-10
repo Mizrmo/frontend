@@ -1,32 +1,63 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { resetPassword } from '../../src/api/auth';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { isValidPassword } from '../../src/api/utils';
 
 export default function SetNewPasswordScreen() {
   const router = useRouter();
+  const { emailOrPhone, code } = useLocalSearchParams<{
+    emailOrPhone?: string;
+    code?: string;
+  }>();
   const [formData, setFormData] = useState({ password: '', confirm: '' });
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSave = () => {
-    if (!formData.password || !formData.confirm) {
-      Alert.alert('Error', 'Please fill in both password fields');
+  const handleSave = async () => {
+    if (!emailOrPhone || !code) {
+      Alert.alert('Error', 'Verification expired. Please request a new OTP.');
+      router.replace('/(auth)/send-verification');
       return;
     }
-    if (formData.password !== formData.confirm) {
-        Alert.alert('Error', 'Passwords do not match');
-        return;
+
+    if (!formData.password || !formData.confirm) {
+      Alert.alert('Error', 'Please fill in both password fields.');
+      return;
     }
+
+    if (formData.password !== formData.confirm) {
+      Alert.alert('Error', 'Passwords do not match.');
+      return;
+    }
+
+    if (!isValidPassword(formData.password)) {
+      Alert.alert(
+        'Weak password',
+        'Use at least 8 characters with uppercase, lowercase, a number, and a special character.'
+      );
+      return;
+    }
+
     setIsLoading(true);
-    // Simulated API call
-    setTimeout(() => {
-      setIsLoading(false);
-      Alert.alert('Success', 'Password reset successfully', [
-          { text: 'OK', onPress: () => router.replace('/(auth)/signin') }
+    try {
+      await resetPassword({
+        emailOrPhone: String(emailOrPhone),
+        code: String(code),
+        newPassword: formData.password,
+      });
+
+      Alert.alert('Success', 'Password reset successfully.', [
+        { text: 'OK', onPress: () => router.replace('/(auth)/signin') },
       ]);
-    }, 1500);
+    } catch (error) {
+      Alert.alert('Reset failed', getApiErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -43,14 +74,14 @@ export default function SetNewPasswordScreen() {
         <Text style={styles.subtitle}>Set your password</Text>
 
         <View style={styles.form}>
-         <View style={styles.inputWrap}>
+          <View style={styles.inputWrap}>
             <TextInput
               style={styles.input}
               placeholder="Enter Your New Password"
               placeholderTextColor="#D0D0D0"
               secureTextEntry={!showPass}
               value={formData.password}
-              onChangeText={(t) => setFormData({...formData, password: t})}
+              onChangeText={(t) => setFormData({ ...formData, password: t })}
             />
             <TouchableOpacity onPress={() => setShowPass(!showPass)}>
               <Image source={require('../../assets/showpass.png')} style={styles.showIcon} resizeMode="contain" />
@@ -64,7 +95,7 @@ export default function SetNewPasswordScreen() {
               placeholderTextColor="#D0D0D0"
               secureTextEntry={!showConfirm}
               value={formData.confirm}
-              onChangeText={(t) => setFormData({...formData, confirm: t})}
+              onChangeText={(t) => setFormData({ ...formData, confirm: t })}
             />
             <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)}>
               <Image source={require('../../assets/showpass.png')} style={styles.showIcon} resizeMode="contain" />
@@ -93,5 +124,5 @@ const styles = StyleSheet.create({
   input: { flex: 1, fontSize: 14, color: '#000', fontFamily: 'Roboto_400Regular' },
   submitBtn: { backgroundColor: '#0056B3', height: 45, width: 362, borderRadius: 42, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
   submitBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular' },
-  showIcon: { width: 22, height: 22, tintColor: '#94A3B8' }
+  showIcon: { width: 22, height: 22, tintColor: '#94A3B8' },
 });

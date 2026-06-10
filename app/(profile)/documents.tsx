@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { uploadDriverDocuments, type DriverDocumentsUpload } from '../../src/api/drivers';
+import { getApiErrorMessage } from '../../src/api/errors';
 
 interface Document {
   id: string;
@@ -10,6 +21,7 @@ interface Document {
   subtitle: string;
   status: 'verified' | 'pending' | 'missing';
   imageKey: string;
+  apiField: keyof DriverDocumentsUpload;
 }
 
 export default function UserDocumentsScreen() {
@@ -18,27 +30,67 @@ export default function UserDocumentsScreen() {
   const [uploading, setUploading] = useState<string | null>(null);
 
   const documents: Document[] = [
-    { id: 'ghana_card', title: 'Ghana Card', subtitle: 'National ID', status: 'verified', imageKey: 'ghana_card' },
-    { id: 'drivers_license', title: "Driver's License", subtitle: 'Valid driving license', status: 'pending', imageKey: 'drivers_license' },
-    { id: 'vehicle_reg', title: 'Vehicle Registration', subtitle: 'Roadworthy certificate', status: 'missing', imageKey: 'vehicle_reg' },
+    {
+      id: 'ghana_card',
+      title: 'Ghana Card',
+      subtitle: 'National ID (front)',
+      status: images.ghana_card ? 'pending' : 'missing',
+      imageKey: 'ghana_card',
+      apiField: 'ghanaCardFront',
+    },
+    {
+      id: 'drivers_license',
+      title: "Driver's License",
+      subtitle: 'License (front)',
+      status: images.drivers_license ? 'pending' : 'missing',
+      imageKey: 'drivers_license',
+      apiField: 'licenseFront',
+    },
+    {
+      id: 'vehicle_reg',
+      title: 'Vehicle Registration',
+      subtitle: 'Roadworthy certificate',
+      status: images.vehicle_reg ? 'pending' : 'missing',
+      imageKey: 'vehicle_reg',
+      apiField: 'roadWorthiness',
+    },
   ];
 
   const statusColors = { verified: '#10B981', pending: '#F59E0B', missing: '#EF4444' };
   const statusLabels = { verified: 'Verified', pending: 'Under Review', missing: 'Upload Required' };
 
   const pickDocument = async (doc: Document) => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Allow photo library access to upload documents.');
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
-      quality: 0.85,
+      quality: 0.5,
     });
-    if (!result.canceled) {
-      setUploading(doc.id);
-      setImages({ ...images, [doc.imageKey]: result.assets[0].uri });
-      setTimeout(() => {
-        setUploading(null);
-        Alert.alert('Uploaded', `${doc.title} has been submitted for review.`);
-      }, 1500);
+    if (result.canceled) {
+      return;
+    }
+
+    const uri = result.assets[0].uri;
+    setUploading(doc.id);
+    setImages((prev) => ({ ...prev, [doc.imageKey]: uri }));
+
+    try {
+      await uploadDriverDocuments({ [doc.apiField]: uri });
+      Alert.alert('Uploaded', `${doc.title} has been submitted for review.`);
+    } catch (error) {
+      setImages((prev) => {
+        const next = { ...prev };
+        delete next[doc.imageKey];
+        return next;
+      });
+      Alert.alert('Upload failed', getApiErrorMessage(error));
+    } finally {
+      setUploading(null);
     }
   };
 
@@ -98,9 +150,15 @@ export default function UserDocumentsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingTop: 60, paddingHorizontal: 20, paddingBottom: 20,
-    backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F1F5F9'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   backBtn: { flexDirection: 'row', alignItems: 'center' },
   backText: { fontSize: 16, color: '#1A1A1A', marginLeft: 4 },
@@ -108,9 +166,17 @@ const styles = StyleSheet.create({
   content: { padding: 20, paddingBottom: 40 },
   infoText: { fontSize: 14, color: '#64748B', lineHeight: 20, marginBottom: 25, paddingHorizontal: 4 },
   docCard: {
-    backgroundColor: '#FFF', borderRadius: 16, padding: 16, marginBottom: 16,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    elevation: 1, shadowColor: '#000', shadowOpacity: 0.04, shadowOffset: { width: 0, height: 2 }
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 2 },
   },
   docLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   docIconBox: { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
@@ -119,6 +185,14 @@ const styles = StyleSheet.create({
   docSubtitle: { fontSize: 12, color: '#94A3B8', marginTop: 2, marginBottom: 8 },
   statusBadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 20 },
   statusText: { fontSize: 11, fontWeight: '700' },
-  uploadBtn: { width: 48, height: 48, borderRadius: 12, backgroundColor: '#EEF4FF', justifyContent: 'center', alignItems: 'center', marginLeft: 12 },
-  uploadedThumb: { width: 46, height: 46, borderRadius: 10 }
+  uploadBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#EEF4FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  uploadedThumb: { width: 46, height: 46, borderRadius: 10 },
 });

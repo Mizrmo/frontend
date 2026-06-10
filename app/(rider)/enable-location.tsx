@@ -1,13 +1,59 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
+  Linking,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 import { MapView } from '../../components/Map';
+import { getCurrentDeviceLocation } from '../../src/utils/userLocation';
 
 const { width } = Dimensions.get('window');
 
 export default function EnableLocationScreen() {
   const router = useRouter();
+  const [isRequesting, setIsRequesting] = useState(false);
+
+  const goHome = () => router.replace('/(rider)/home');
+
+  const handleEnableLocation = async () => {
+    setIsRequesting(true);
+    try {
+      const { status: existing } = await Location.getForegroundPermissionsAsync();
+      let status = existing;
+
+      if (existing !== 'granted') {
+        const result = await Location.requestForegroundPermissionsAsync();
+        status = result.status;
+      }
+
+      if (status === 'granted') {
+        await getCurrentDeviceLocation();
+        goHome();
+        return;
+      }
+
+      Alert.alert(
+        'Location access',
+        'Mizrmo needs location permission to show nearby pickups and live trip tracking. You can enable it in Settings.',
+        [
+          { text: 'Not now', style: 'cancel', onPress: goHome },
+          { text: 'Open Settings', onPress: () => Linking.openSettings() },
+        ]
+      );
+    } catch {
+      Alert.alert('Location', 'Could not request location permission. Try again from Settings.');
+    } finally {
+      setIsRequesting(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -19,7 +65,6 @@ export default function EnableLocationScreen() {
 
       <View style={styles.popupContainer}>
         <View style={styles.popup}>
-          {/* Illustration with ripples */}
           <View style={styles.illustration}>
             <View style={[styles.ripple, styles.ripple1]} />
             <View style={[styles.ripple, styles.ripple2]} />
@@ -29,19 +74,23 @@ export default function EnableLocationScreen() {
           </View>
 
           <Text style={styles.title}>Enable Your Location</Text>
-          <Text style={styles.subtitle}>Allow Mizrmo to access your location for a better ride booking experience.</Text>
+          <Text style={styles.subtitle}>
+            Allow Mizrmo to access your location for a better ride booking experience.
+          </Text>
 
           <View style={styles.actions}>
             <TouchableOpacity
               style={styles.useBtn}
-              onPress={() => router.replace('/(rider)/home')}
+              onPress={handleEnableLocation}
+              disabled={isRequesting}
             >
-              <Text style={styles.useBtnText}>Use My Location</Text>
+              {isRequesting ? (
+                <ActivityIndicator color="#FFF" />
+              ) : (
+                <Text style={styles.useBtnText}>Use My Location</Text>
+              )}
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.skipBtn}
-              onPress={() => router.replace('/(rider)/home')}
-            >
+            <TouchableOpacity style={styles.skipBtn} onPress={goHome} disabled={isRequesting}>
               <Text style={styles.skipBtnText}>Skip for now</Text>
             </TouchableOpacity>
           </View>
@@ -57,19 +106,53 @@ const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
   popupContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
   popup: {
-    width: width - 40, backgroundColor: '#FFF', borderRadius: 28,
-    padding: 30, alignItems: 'center', elevation: 20, shadowColor: '#000',
-    shadowOpacity: 0.2, shadowOffset: { width: 0, height: 10 }
+    width: width - 40,
+    backgroundColor: '#FFF',
+    borderRadius: 28,
+    padding: 30,
+    alignItems: 'center',
+    elevation: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 10 },
   },
   illustration: { width: 120, height: 120, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  pinCenter: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center', elevation: 5, zIndex: 10 },
+  pinCenter: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    zIndex: 10,
+  },
   ripple: { position: 'absolute', borderRadius: 100, borderWidth: 1, borderColor: 'rgba(255, 204, 0, 0.3)' },
   ripple1: { width: 90, height: 90 },
   ripple2: { width: 120, height: 120 },
-  title: { fontSize: 22, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A', marginBottom: 12, textAlign: 'center' },
-  subtitle: { fontSize: 14, color: '#64748B', textAlign: 'center', lineHeight: 22, marginBottom: 30, fontFamily: 'Roboto_400Regular' },
+  title: {
+    fontSize: 22,
+    fontFamily: 'Montserrat_600SemiBold',
+    color: '#1A1A1A',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 30,
+    fontFamily: 'Roboto_400Regular',
+  },
   actions: { width: '100%', gap: 12 },
-  useBtn: { backgroundColor: '#0056B3', height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
+  useBtn: {
+    backgroundColor: '#0056B3',
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   useBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular', fontWeight: '600' },
   skipBtn: { height: 50, justifyContent: 'center', alignItems: 'center' },
   skipBtnText: { color: '#94A3B8', fontSize: 15, fontFamily: 'Roboto_400Regular' },

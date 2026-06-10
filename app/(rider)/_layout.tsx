@@ -47,6 +47,7 @@ export default function RiderLayout() {
       <Tabs.Screen name="chat" options={{ href: null }} />
       <Tabs.Screen name="rate-driver" options={{ href: null }} />
       <Tabs.Screen name="enable-location" options={{ href: null }} />
+      <Tabs.Screen name="raise-dispute" options={{ href: null }} />
       <Tabs.Screen name="driver-details" options={{ href: null }} />
       <Tabs.Screen name="mizmiles-rewards" options={{ href: null }} />
     </Tabs>

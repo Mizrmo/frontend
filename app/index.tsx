@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, Animated, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../src/context/AuthContext';
+import { resolvePostAuthRoute } from '../src/utils/postAuthRoute';
 
 const { width, height } = Dimensions.get('window');
 
@@ -13,10 +14,34 @@ const SLIDES = [
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { isLoading, isAuthenticated, user } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSplash, setShowSplash] = useState(true);
 
+  useEffect(() => {
+    if (isLoading || !isAuthenticated) {
+      return;
+    }
+    resolvePostAuthRoute(user).then((route) => {
+      router.replace(route);
+    });
+  }, [isLoading, isAuthenticated, user, router]);
 
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color="#0056B3" />
+      </View>
+    );
+  }
+
+  if (isAuthenticated) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color="#0056B3" />
+      </View>
+    );
+  }
 
   if (showSplash) {
     return (
@@ -70,6 +95,7 @@ export default function OnboardingScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFF' },
+  centered: { justifyContent: 'center', alignItems: 'center' },
   slide: { width, height, alignItems: 'center', padding: 40, justifyContent: 'center' },
   onboardingImg: { width: width * 0.8, height: height * 0.35, marginBottom: 20 },
   textContainer: { alignItems: 'center' },

@@ -1,14 +1,58 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import {
+  formatPayoutAccountLabel,
+  getDriverPayoutAccount,
+  getDriverPayouts,
+  type DriverPayoutAccount,
+  type DriverPayoutRecord,
+} from '../../src/api/payouts';
+import { useAuth } from '../../src/context/AuthContext';
+import { formatCurrency } from '../../src/api/trips';
+import { getNumericAmount } from '../../src/api/drivers';
 
 export default function PaymentScreen() {
   const router = useRouter();
+  const { activeRole, user } = useAuth();
+  const isDriver = activeRole === 'DRIVER' || user?.role === 'DRIVER';
+  const [account, setAccount] = useState<DriverPayoutAccount | null>(null);
+  const [payouts, setPayouts] = useState<DriverPayoutRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(isDriver);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const loadPayoutData = useCallback(async () => {
+    if (!isDriver) {
+      return;
+    }
+    try {
+      const [accountData, payoutHistory] = await Promise.all([
+        getDriverPayoutAccount().catch(() => null),
+        getDriverPayouts().catch(() => []),
+      ]);
+      setAccount(accountData);
+      setPayouts(payoutHistory);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, [isDriver]);
+
+  useEffect(() => {
+    loadPayoutData();
+  }, [loadPayoutData]);
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="chevron-back" size={24} color="#1A1A1A" />
@@ -18,70 +62,77 @@ export default function PaymentScreen() {
         <View style={{ width: 60 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.sectionTitle}>Saved Methods</Text>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          isDriver ? (
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={() => {
+                setIsRefreshing(true);
+                loadPayoutData();
+              }}
+            />
+          ) : undefined
+        }
+      >
+        {!isDriver ? (
+          <>
+            <Text style={styles.sectionTitle}>Ride payments</Text>
+            <View style={styles.infoCard}>
+              <Ionicons name="phone-portrait-outline" size={28} color="#0056B3" />
+              <Text style={styles.infoTitle}>MTN Mobile Money via Paystack</Text>
+              <Text style={styles.infoText}>
+                You pay for rides at booking time using Mobile Money. No saved cards are required.
+              </Text>
+            </View>
+          </>
+        ) : isLoading ? (
+          <ActivityIndicator size="large" color="#0056B3" style={{ marginTop: 40 }} />
+        ) : (
+          <>
+            <Text style={styles.sectionTitle}>Payout account</Text>
+            <View style={styles.payoutCard}>
+              <Ionicons
+                name={account?.accountType === 'BANK_ACCOUNT' ? 'business-outline' : 'wallet-outline'}
+                size={24}
+                color="#0056B3"
+              />
+              <View style={styles.payoutInfo}>
+                <Text style={styles.payoutLabel}>{formatPayoutAccountLabel(account)}</Text>
+                <Text style={styles.payoutSub}>
+                  {account?.isVerified ? 'Verified' : 'Earnings are sent to this account'}
+                </Text>
+              </View>
+            </View>
 
-        {/* Visa Card */}
-        <TouchableOpacity style={[styles.paymentCard, styles.visaCard]}>
-          <View style={styles.cardGlass} />
-          <View style={styles.cardTop}>
-            <Image source={require('../../assets/visa-logo.png')} style={styles.cardLogo} resizeMode="contain" />
-            <View style={styles.chip} />
-          </View>
-          <Text style={styles.cardNumber}>•••• •••• •••• 8970</Text>
-          <View style={styles.cardBottom}>
-            <View>
-              <Text style={styles.cardLabel}>Card Holder</Text>
-              <Text style={styles.cardValue}>Jane Doe</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.cardLabel}>Expires</Text>
-              <Text style={styles.cardValue}>12/26</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addBtn}
+              onPress={() => router.push('/(profile)/add-payment-method')}
+            >
+              <Text style={styles.addBtnText}>
+                {account ? 'Update payout account' : 'Add payout account'}
+              </Text>
+            </TouchableOpacity>
 
-        {/* MTN Momo Card */}
-        <TouchableOpacity style={[styles.paymentCard, styles.mtnCard]}>
-          <View style={styles.cardGlass} />
-          <View style={styles.cardTop}>
-            <Image source={require('../../assets/mtn-logo-img.png')} style={styles.cardLogoMtn} resizeMode="contain" />
-            <Text style={styles.momoText}>Mobile Money</Text>
-          </View>
-          <Text style={styles.cardNumber}>••• ••• ••• 1234</Text>
-          <View style={styles.cardBottom}>
-            <View>
-              <Text style={styles.cardLabel}>Name</Text>
-              <Text style={styles.cardValue}>Jane Doe</Text>
-            </View>
-            <View style={styles.statusRow}>
-              <View style={styles.activeDot} />
-              <Text style={styles.statusText}>Active</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        <Text style={[styles.sectionTitle, { marginTop: 24 }]}>Other Methods</Text>
-
-        {[
-          { id: 'bank', name: 'Bank Transfer', sub: 'Direct from your account', icon: 'business-outline' },
-          { id: 'cash', name: 'Cash', sub: 'Pay when you arrive', icon: 'cash-outline' },
-        ].map(method => (
-          <TouchableOpacity key={method.id} style={styles.methodItem}>
-            <View style={styles.methodIconBox}>
-              <Ionicons name={method.icon as any} size={24} color="#0056B3" />
-            </View>
-            <View style={styles.methodInfo}>
-              <Text style={styles.methodName}>{method.name}</Text>
-              <Text style={styles.methodSub}>{method.sub}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
-          </TouchableOpacity>
-        ))}
-
-        <TouchableOpacity style={styles.addBtn}>
-          <Text style={styles.addBtnText}>Add Payment Method</Text>
-        </TouchableOpacity>
+            <Text style={[styles.sectionTitle, { marginTop: 24 }]}>Recent payouts</Text>
+            {payouts.length === 0 ? (
+              <Text style={styles.emptyText}>No payouts yet.</Text>
+            ) : (
+              payouts.slice(0, 10).map((payout, index) => (
+                <View key={payout.id ?? `payout-${index}`} style={styles.payoutRow}>
+                  <View>
+                    <Text style={styles.payoutRowTitle}>{payout.status ?? 'Payout'}</Text>
+                    <Text style={styles.payoutRowDate}>{payout.createdAt ?? ''}</Text>
+                  </View>
+                  <Text style={styles.payoutRowAmount}>
+                    {formatCurrency(getNumericAmount(payout.amount))}
+                  </Text>
+                </View>
+              ))
+            )}
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -90,46 +141,78 @@ export default function PaymentScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
   header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingTop: 60, paddingHorizontal: 20, paddingBottom: 20,
-    backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#F1F5F9',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   backBtn: { flexDirection: 'row', alignItems: 'center' },
   backText: { fontSize: 16, color: '#1A1A1A', marginLeft: 4, fontFamily: 'Roboto_400Regular' },
   headerTitle: { fontSize: 18, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
   content: { padding: 20, paddingBottom: 40 },
-  sectionTitle: { fontSize: 16, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A', marginBottom: 16 },
-  paymentCard: {
-    height: 180, borderRadius: 24, padding: 24, marginBottom: 16, overflow: 'hidden',
-    justifyContent: 'space-between', elevation: 4, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 4 }
+  sectionTitle: { fontSize: 16, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A', marginBottom: 16 },
+  infoCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
   },
-  cardGlass: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.05)' },
-  visaCard: { backgroundColor: '#1E293B' },
-  mtnCard: { backgroundColor: '#FACC15' },
-  cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardLogo: { width: 50, height: 16 },
-  cardLogoMtn: { width: 34, height: 34 },
-  chip: { width: 36, height: 26, backgroundColor: '#FFD700', borderRadius: 6, opacity: 0.8 },
-  momoText: { fontSize: 12, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
-  cardNumber: { fontSize: 18, fontFamily: 'Montserrat_500Medium', color: '#FFF', letterSpacing: 2 },
-  cardBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  cardLabel: { fontSize: 10, color: 'rgba(255,255,255,0.6)', marginBottom: 2 },
-  cardValue: { fontSize: 13, color: '#FFF', fontFamily: 'Montserrat_500Medium' },
-  statusRow: { flexDirection: 'row', alignItems: 'center' },
-  activeDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#10B981', marginRight: 6 },
-  statusText: { fontSize: 12, color: '#1A1A1A', fontFamily: 'Montserrat_500Medium' },
-  methodItem: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF',
-    padding: 16, borderRadius: 16, marginBottom: 10,
-    elevation: 1, shadowColor: '#000', shadowOpacity: 0.04, shadowOffset: { width: 0, height: 2 }
+  infoTitle: {
+    fontSize: 16,
+    fontFamily: 'Montserrat_600SemiBold',
+    color: '#1A1A1A',
+    marginTop: 12,
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  methodIconBox: { width: 44, height: 44, backgroundColor: '#EEF4FF', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  methodInfo: { flex: 1, marginLeft: 14 },
-  methodName: { fontSize: 15, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
-  methodSub: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular' },
+  infoText: {
+    fontSize: 14,
+    color: '#64748B',
+    fontFamily: 'Roboto_400Regular',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  payoutCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    marginBottom: 16,
+  },
+  payoutInfo: { flex: 1, marginLeft: 14 },
+  payoutLabel: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
+  payoutSub: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 4 },
   addBtn: {
-    backgroundColor: '#0056B3', height: 55, borderRadius: 28,
-    justifyContent: 'center', alignItems: 'center', marginTop: 30,
+    backgroundColor: '#0056B3',
+    height: 52,
+    borderRadius: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  addBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular', fontWeight: '600' },
+  addBtnText: { color: '#FFF', fontSize: 15, fontFamily: 'Montserrat_600SemiBold' },
+  emptyText: { color: '#94A3B8', fontFamily: 'Roboto_400Regular' },
+  payoutRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  payoutRowTitle: { fontSize: 14, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A', textTransform: 'capitalize' },
+  payoutRowDate: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
+  payoutRowAmount: { fontSize: 14, fontFamily: 'Montserrat_700Bold', color: '#10B981' },
 });

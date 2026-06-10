@@ -1,30 +1,86 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { 
   View, Text, StyleSheet, TouchableOpacity, ScrollView, 
-  Dimensions, Modal, Image, Platform, ActivityIndicator 
+  Dimensions, Modal, Image, Platform, ActivityIndicator, Alert
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { storage } from '../../src/api/storage';
+import { useAuth } from '../../src/context/AuthContext';
+import { getDriverBookingRequests, getRiderName } from '../../src/api/bookings';
+import { getDriverEarningsSummary, getNumericAmount } from '../../src/api/drivers';
+import { formatCurrency, formatDepartureDate, getMyUpcomingTrips, getTripPrice } from '../../src/api/trips';
+import { getMyVehicles } from '../../src/api/vehicles';
+import type { Trip } from '../../src/api/trip-types';
+import type { DriverBookingRequest } from '../../src/api/bookings';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ProfileAvatar } from '../../components/ProfileAvatar';
+import { useProfilePhoto } from '../../src/hooks/useProfilePhoto';
 
 const { width } = Dimensions.get('window');
 
 export default function DriverDashboardScreen() {
   const router = useRouter();
+  const { signOut, user, switchRole } = useAuth();
+  const { photoUri, reload: reloadProfilePhoto } = useProfilePhoto();
   const [menuVisible, setMenuVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [earningsSummary, setEarningsSummary] = useState({ balance: 0, weekly: 0, ridesToday: 0 });
+  const [upcomingTrip, setUpcomingTrip] = useState<Trip | null>(null);
+  const [pendingRequests, setPendingRequests] = useState<DriverBookingRequest[]>([]);
+  const [needsVehicleSetup, setNeedsVehicleSetup] = useState(false);
+
+  const displayName = user?.firstName
+    ? [user.firstName, user.lastName].filter(Boolean).join(' ')
+    : 'Driver';
+
+  const loadDashboard = useCallback(async () => {
+    try {
+      const [summary, upcoming, requests, vehicles] = await Promise.all([
+        getDriverEarningsSummary(),
+        getMyUpcomingTrips({ limit: 1 }),
+        getDriverBookingRequests(),
+        getMyVehicles(),
+      ]);
+      setNeedsVehicleSetup(vehicles.length === 0);
+      setEarningsSummary({
+        balance: getNumericAmount(summary.currentBalance ?? summary.totalEarnings),
+        weekly: getNumericAmount(summary.weeklyEarnings ?? summary.monthlyEarnings),
+        ridesToday: summary.totalRides ?? summary.activeRides ?? 0,
+      });
+      setUpcomingTrip(upcoming.data[0] ?? null);
+      setPendingRequests(requests);
+    } catch {
+      setUpcomingTrip(null);
+      setPendingRequests([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
+  useEffect(() => {
+    if (menuVisible) {
+      reloadProfilePhoto();
+    }
+  }, [menuVisible, reloadProfilePhoto]);
+
+  useFocusEffect(
+    useCallback(() => {
+      reloadProfilePhoto();
+    }, [reloadProfilePhoto])
+  );
 
   const menuItems = [
     { id: '1', title: 'Earnings', icon: 'cash-outline', route: '/(driver)/earnings-detail' },
     { id: '2', title: 'Miz Miles', icon: 'pricetag-outline', route: '/(driver)/mizmiles-rewards' },
     { id: '3', title: 'Trips', icon: 'car-sport-outline', route: '/(driver)/trips' },
-    { id: '4', title: 'Referral', icon: 'people-outline', route: '/(profile)/edit-profile' },
+    { id: '4', title: 'Referral', icon: 'people-outline', route: '/(profile)/referrals' },
     { id: '5', title: 'Payment', icon: 'wallet-outline', route: '/(profile)/payment' },
     { id: '6', title: 'Support', icon: 'headset-outline', route: '/(profile)/help-support' },
-    { id: '7', title: 'About Us', icon: 'information-circle-outline', route: '/(profile)/settings' },
+    { id: '7', title: 'About Us', icon: 'information-circle-outline', route: '/(profile)/about-us' },
   ];
 
   const navigateTo = (route: string) => {
@@ -34,26 +90,54 @@ export default function DriverDashboardScreen() {
 
   const handleLogout = () => {
     setMenuVisible(false);
-    setLoadingText('Logging out...');
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Log Out',
+        style: 'destructive',
+        onPress: async () => {
+          setLoadingText('Logging out...');
+          setLoading(true);
+          try {
+            await signOut();
+            router.replace('/(auth)/signin');
+          } finally {
+            setLoading(false);
+          }
+        },
+      },
+    ]);
+  };
+
+  const performSwitchToRider = async () => {
+    setLoadingText('Switching roles...');
     setLoading(true);
-    setTimeout(async () => {
-        await storage.removeItem('token');
-        router.replace('/(auth)/signin');
-    }, 1500);
+
+    const result = await switchRole('RIDER');
+    setLoading(false);
+
+    if (!result.ok) {
+      Alert.alert('Switch failed', result.message ?? 'Unable to switch role.');
+      return;
+    }
+
+    setShowSuccessModal(true);
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      router.replace('/(rider)/home');
+    }, 1200);
   };
 
   const handleSwitchProfile = () => {
     setMenuVisible(false);
-    setLoadingText('Switching roles...');
-    setLoading(true);
-    setTimeout(() => {
-        setLoading(false);
-        setShowSuccessModal(true);
-        setTimeout(() => {
-            setShowSuccessModal(false);
-            router.replace('/(rider)/home');
-        }, 2000);
-    }, 1500);
+    Alert.alert(
+      'Switch to Rider',
+      'Are you sure you want to switch to rider mode?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Switch', onPress: () => void performSwitchToRider() },
+      ]
+    );
   };
 
   return (
@@ -75,9 +159,9 @@ export default function DriverDashboardScreen() {
 
                 {/* Profile Section */}
                 <View style={styles.profileSection}>
-                    <Image source={require('../../assets/lady_profile.png')} style={styles.avatar} />
+                    <ProfileAvatar size={64} uri={photoUri} />
                     <View style={styles.profileInfo}>
-                        <Text style={styles.userName}>Daniel Asante</Text>
+                        <Text style={styles.userName}>{displayName}</Text>
                         <TouchableOpacity onPress={() => navigateTo('/(profile)/edit-profile')}>
                             <Text style={styles.profileLink}>Profile</Text>
                         </TouchableOpacity>
@@ -157,7 +241,7 @@ export default function DriverDashboardScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeRow}>
             <View>
-                <Text style={styles.greeting}>Hello, Daniel 👋</Text>
+                <Text style={styles.greeting}>Hello, {user?.firstName ?? 'Driver'} 👋</Text>
                 <Text style={styles.subGreeting}>Ready for today's rides?</Text>
             </View>
             <TouchableOpacity style={styles.onlineBadge}>
@@ -165,6 +249,24 @@ export default function DriverDashboardScreen() {
                 <Text style={styles.onlineText}>Online</Text>
             </TouchableOpacity>
         </View>
+
+        {needsVehicleSetup ? (
+          <TouchableOpacity
+            style={styles.onboardingBanner}
+            onPress={() => router.push('/(auth)/vehicle-details')}
+          >
+            <View style={styles.onboardingBannerIcon}>
+              <Ionicons name="car-outline" size={22} color="#0056B3" />
+            </View>
+            <View style={styles.onboardingBannerText}>
+              <Text style={styles.onboardingBannerTitle}>Complete driver setup</Text>
+              <Text style={styles.onboardingBannerSub}>
+                Add your licence, Ghana Card, and vehicle details to start accepting rides.
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#0056B3" />
+          </TouchableOpacity>
+        ) : null}
 
         <View style={styles.contentContainer}>
           <TouchableOpacity 
@@ -180,7 +282,7 @@ export default function DriverDashboardScreen() {
               <View style={styles.cardTop}>
                   <View>
                       <Text style={styles.earningsLabel}>Total Earnings</Text>
-                      <Text style={styles.earningsValue}>GH¢1,000.00</Text>
+                      <Text style={styles.earningsValue}>{formatCurrency(earningsSummary.balance)}</Text>
                   </View>
                   <View style={styles.walletIconBg}>
                       <MaterialCommunityIcons name="wallet-outline" size={28} color="#FFF" />
@@ -188,7 +290,9 @@ export default function DriverDashboardScreen() {
               </View>
               <View style={styles.cardDivider} />
               <View style={styles.cardBottom}>
-                  <Text style={styles.cardBottomText}>+12.5% from last week</Text>
+                  <Text style={styles.cardBottomText}>
+                    This week: {formatCurrency(earningsSummary.weekly)}
+                  </Text>
                   <TouchableOpacity onPress={() => router.push('/(driver)/earnings-detail')}>
                     <Text style={styles.withdrawLink}>Withdraw Cash</Text>
                   </TouchableOpacity>
@@ -203,7 +307,7 @@ export default function DriverDashboardScreen() {
                  <Ionicons name="car-outline" size={20} color="#FFF" />
               </View>
               <Text style={[styles.statsLabelSmall, { color: 'rgba(255,255,255,0.8)' }]}>Rides Today</Text>
-              <Text style={[styles.statsValueSmall, { color: '#FFF' }]}>34</Text>
+              <Text style={[styles.statsValueSmall, { color: '#FFF' }]}>{earningsSummary.ridesToday}</Text>
             </View>
             <View style={[styles.smallStatsCard, { backgroundColor: '#FFCC00' }]}>
               <View style={[styles.statIconBg, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
@@ -217,30 +321,63 @@ export default function DriverDashboardScreen() {
           {/* Active Ride Card */}
           <View style={styles.sectionHeaderLine}>
             <Text style={styles.sectionTitle}>Active Ride</Text>
-            <TouchableOpacity style={styles.liveTracking}>
+            <TouchableOpacity
+              style={styles.liveTracking}
+              onPress={() => {
+                if (upcomingTrip?.status === 'IN_PROGRESS') {
+                  router.push({
+                    pathname: '/(driver)/start-ride',
+                    params: { tripId: upcomingTrip.id },
+                  });
+                  return;
+                }
+                if (pendingRequests[0]?.tripId) {
+                  router.push({
+                    pathname: '/(driver)/start-ride',
+                    params: {
+                      tripId: pendingRequests[0].tripId,
+                      bookingId: pendingRequests[0].id,
+                    },
+                  });
+                  return;
+                }
+                router.push('/(driver)/trips');
+              }}
+            >
                 <View style={styles.liveDot} />
                 <Text style={styles.liveText}>Live Tracking</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.activeRideCard}>
-            <View style={styles.activeRideBody}>
-              <Image source={require('../../assets/lady_profile.png')} style={styles.riderAvatar} />
-              <View style={styles.riderInfo}>
-                 <View style={styles.riderHeader}>
-                    <Text style={styles.riderName}>Jane Asantewa</Text>
-                    <Text style={styles.rideTime}>10:10 AM</Text>
-                 </View>
-                 <Text style={styles.rideRoute}>Ashaiman Main → Tema Comm. 1</Text>
-                 <Text style={styles.pickupTime}>Pickup in: <Text style={{ color: '#0056B3', fontFamily: 'Montserrat_700Bold' }}>12 mins</Text></Text>
+          {pendingRequests.length > 0 ? (
+            <TouchableOpacity
+              style={styles.activeRideCard}
+              onPress={() =>
+                router.push({
+                  pathname: '/(driver)/incoming-request',
+                  params: { bookingId: pendingRequests[0].id },
+                })
+              }
+            >
+              <View style={styles.activeRideBody}>
+                <Image source={require('../../assets/lady_profile.png')} style={styles.riderAvatar} />
+                <View style={styles.riderInfo}>
+                  <View style={styles.riderHeader}>
+                    <Text style={styles.riderName}>{getRiderName(pendingRequests[0])}</Text>
+                    <Text style={styles.rideTime}>New request</Text>
+                  </View>
+                  <Text style={styles.rideRoute}>
+                    {pendingRequests[0].trip?.originCity} → {pendingRequests[0].trip?.destinationCity}
+                  </Text>
+                  <Text style={styles.pickupTime}>
+                    Tap to review booking request
+                  </Text>
+                </View>
               </View>
-              <TouchableOpacity style={styles.chatIconBtn} onPress={() => router.push('/(driver)/chat')}>
-                  <MaterialCommunityIcons name="chat-processing" size={24} color="#0056B3" />
-                  <View style={styles.chatBadge} />
-              </TouchableOpacity>
-              <Ionicons name="chevron-forward" size={20} color="#CBD5E1" style={{ marginLeft: 5 }} />
-            </View>
-          </View>
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.emptyHint}>No active requests right now.</Text>
+          )}
 
           {/* Upcoming Schedule */}
           <View style={styles.sectionHeaderLine}>
@@ -250,39 +387,59 @@ export default function DriverDashboardScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.upcomingCard}>
-            <View style={styles.upcomingTop}>
-               <View style={styles.typeTag}>
+          {upcomingTrip ? (
+            <TouchableOpacity
+              style={styles.upcomingCard}
+              onPress={() =>
+                router.push({
+                  pathname: '/(driver)/start-ride',
+                  params: { tripId: upcomingTrip.id },
+                })
+              }
+            >
+              <View style={styles.upcomingTop}>
+                <View style={styles.typeTag}>
                   <Ionicons name="swap-horizontal" size={14} color="#0056B3" />
-                  <Text style={styles.typeTagText}>Inter-City</Text>
-               </View>
-               <Text style={styles.upcomingPrice}>GH¢ 22.00</Text>
-            </View>
-            
-            <View style={styles.routeDisplay}>
-              <View style={styles.routeLineContainer}>
-                <View style={[styles.routeDot, { backgroundColor: '#0056B3' }]} />
-                <View style={styles.routeDashedLine} />
-                <View style={[styles.routeDot, { backgroundColor: '#FFCC00' }]} />
+                  <Text style={styles.typeTagText}>Upcoming</Text>
+                </View>
+                <Text style={styles.upcomingPrice}>{formatCurrency(getTripPrice(upcomingTrip))}</Text>
               </View>
-              <View style={styles.routeTexts}>
-                <Text style={styles.routePoint} numberOfLines={1}>Ashaiman, main station</Text>
-                <Text style={[styles.routePoint, { marginTop: 18 }]} numberOfLines={1}>Community One, Tema</Text>
-              </View>
-            </View>
 
-            <View style={styles.upcomingFooter}>
-              <View style={styles.metaItem}>
+              <View style={styles.routeDisplay}>
+                <View style={styles.routeLineContainer}>
+                  <View style={[styles.routeDot, { backgroundColor: '#0056B3' }]} />
+                  <View style={styles.routeDashedLine} />
+                  <View style={[styles.routeDot, { backgroundColor: '#FFCC00' }]} />
+                </View>
+                <View style={styles.routeTexts}>
+                  <Text style={styles.routePoint} numberOfLines={1}>
+                    {upcomingTrip.originAddress ?? upcomingTrip.originCity}
+                  </Text>
+                  <Text style={[styles.routePoint, { marginTop: 18 }]} numberOfLines={1}>
+                    {upcomingTrip.destinationAddress ?? upcomingTrip.destinationCity}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.upcomingFooter}>
+                <View style={styles.metaItem}>
                   <Ionicons name="time-outline" size={14} color="#94A3B8" />
-                  <Text style={styles.metaText}>5 Hrs Usage</Text>
+                  <Text style={styles.metaText}>{formatDepartureDate(upcomingTrip.departureDate)}</Text>
+                </View>
+                {upcomingTrip.distanceKm != null && (
+                  <>
+                    <View style={styles.verticalDivider} />
+                    <View style={styles.metaItem}>
+                      <Ionicons name="map-outline" size={14} color="#94A3B8" />
+                      <Text style={styles.metaText}>{upcomingTrip.distanceKm} km</Text>
+                    </View>
+                  </>
+                )}
               </View>
-              <View style={styles.verticalDivider} />
-              <View style={styles.metaItem}>
-                  <Ionicons name="map-outline" size={14} color="#94A3B8" />
-                  <Text style={styles.metaText}>85 km dist.</Text>
-              </View>
-            </View>
-          </View>
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.emptyHint}>No upcoming trips scheduled.</Text>
+          )}
         </View>
       </ScrollView>
 
@@ -324,6 +481,30 @@ const styles = StyleSheet.create({
   pulse: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#10B981', marginRight: 6 },
   onlineText: { fontSize: 13, fontFamily: 'Montserrat_600SemiBold', color: '#10B981' },
 
+  onboardingBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    borderRadius: 16,
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  onboardingBannerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  onboardingBannerText: { flex: 1, marginRight: 8 },
+  onboardingBannerTitle: { fontSize: 15, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
+  onboardingBannerSub: { fontSize: 13, fontFamily: 'Roboto_400Regular', color: '#64748B', marginTop: 4, lineHeight: 18 },
+
   contentContainer: { paddingHorizontal: 20 },
   earningsCard: { borderRadius: 24, padding: 20, marginBottom: 20, elevation: 5, shadowColor: '#0052B4', shadowOpacity: 0.2 },
   cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
@@ -346,6 +527,7 @@ const styles = StyleSheet.create({
   liveTracking: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
   liveText: { fontSize: 12, fontFamily: 'Montserrat_600SemiBold', color: '#EF4444' },
+  emptyHint: { color: '#94A3B8', fontFamily: 'Roboto_400Regular', fontSize: 13, marginBottom: 12 },
   viewAll: { fontSize: 14, color: '#0056B3', fontFamily: 'Montserrat_600SemiBold' },
 
   activeRideCard: { backgroundColor: '#FFF', borderRadius: 24, padding: 15, borderWidth: 1, borderColor: '#F1F5F9', elevation: 2 },

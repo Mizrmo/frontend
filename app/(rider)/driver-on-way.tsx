@@ -1,149 +1,239 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { MapView, Marker } from '../../components/Map';
+import { getBookingById, getBookingDriverName } from '../../src/api/bookings';
+import { getApiErrorMessage } from '../../src/api/errors';
+import { useRiderTripTracking } from '../../src/hooks/useTripTracking';
+import type { Booking } from '../../src/api/trip-types';
+
+function formatEta(minutes: number | null): string {
+  if (minutes == null || minutes <= 0) {
+    return '--:--';
+  }
+  const hrs = Math.floor(minutes / 60);
+  const mins = Math.floor(minutes % 60);
+  const secs = Math.floor((minutes % 1) * 60);
+  if (hrs > 0) {
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+  return `00:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
 
 export default function DriverOnWayScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ bookingId?: string; tripId?: string }>();
+  const tripId = typeof params.tripId === 'string' ? params.tripId : params.tripId?.[0];
+  const bookingId = typeof params.bookingId === 'string' ? params.bookingId : params.bookingId?.[0];
+
+  const [booking, setBooking] = useState<Booking | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { driverLocation, etaMinutes, isConnected } = useRiderTripTracking({
+    tripId,
+    enabled: Boolean(tripId),
+  });
+
+  useEffect(() => {
+    if (!bookingId) {
+      setIsLoading(false);
+      return;
+    }
+
+    getBookingById(bookingId)
+      .then(setBooking)
+      .catch(() => setBooking(null))
+      .finally(() => setIsLoading(false));
+  }, [bookingId]);
+
+  const trip = booking?.trip;
+  const driverCoord = driverLocation ?? {
+    latitude: trip?.originLatitude ?? 5.6037,
+    longitude: trip?.originLongitude ?? -0.187,
+  };
+  const destCoord = {
+    latitude: trip?.destinationLatitude ?? 5.62,
+    longitude: trip?.destinationLongitude ?? -0.2,
+  };
+
+  const mapRegion = useMemo(
+    () => ({
+      latitude: (driverCoord.latitude + destCoord.latitude) / 2,
+      longitude: (driverCoord.longitude + destCoord.longitude) / 2,
+      latitudeDelta: 0.06,
+      longitudeDelta: 0.06,
+    }),
+    [driverCoord, destCoord]
+  );
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color="#0056B3" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {/* Map */}
       <MapView
         style={styles.map}
-        initialRegion={{ latitude: 5.6037, longitude: -0.1870, latitudeDelta: 0.04, longitudeDelta: 0.04 }}
+        initialRegion={mapRegion}
       >
-        <Marker coordinate={{ latitude: 5.6037, longitude: -0.1870 }}>
+        <Marker coordinate={driverCoord}>
           <View style={styles.carMarker}>
             <Ionicons name="car" size={20} color="#0056B3" />
           </View>
         </Marker>
-        <Marker coordinate={{ latitude: 5.620, longitude: -0.200 }}>
+        <Marker coordinate={destCoord}>
           <View style={styles.destMarker}>
             <Ionicons name="location" size={24} color="#FFCC00" />
           </View>
         </Marker>
       </MapView>
 
-      {/* Back */}
       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
         <Ionicons name="chevron-back" size={22} color="#1A1A1A" />
         <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
 
-      {/* Bottom Sheet */}
       <View style={styles.sheet}>
-        <View style={styles.handle} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.handle} />
 
-        {/* ETA Row */}
-        <View style={styles.etaRow}>
-          <View>
-            <Text style={styles.etaValue}>00: 04: 32</Text>
-            <Text style={styles.etaLabel}>Driver arriving in</Text>
-          </View>
-          <View style={styles.statusBadge}>
-            <View style={styles.statusDot} />
-            <Text style={styles.statusText}>On the way</Text>
-          </View>
-        </View>
-
-        <View style={styles.divider} />
-
-        {/* Route */}
-        <View style={styles.routeBlock}>
-          <View style={styles.routeRow}>
-            <View style={styles.blueDot} />
+          <View style={styles.etaRow}>
             <View>
-              <Text style={styles.routeLabel}>Pickup location</Text>
-              <Text style={styles.routeName}>Ashaiman, main station</Text>
+              <Text style={styles.etaValue}>{formatEta(etaMinutes)}</Text>
+              <Text style={styles.etaLabel}>Driver arriving in</Text>
+            </View>
+            <View style={styles.statusBadge}>
+              <View style={[styles.statusDot, isConnected && styles.statusDotLive]} />
+              <Text style={styles.statusText}>{isConnected ? 'Live' : 'Connecting'}</Text>
             </View>
           </View>
-          <View style={styles.routeLine} />
-          <View style={styles.routeRow}>
-            <Ionicons name="location" size={20} color="#FFCC00" />
-            <View style={{ flex: 1, marginLeft: 8 }}>
-              <Text style={styles.routeLabel}>Drop off Location</Text>
-              <Text style={styles.routeName}>Community One</Text>
+
+          <View style={styles.divider} />
+
+          <View style={styles.routeBlock}>
+            <View style={styles.routeRow}>
+              <View style={styles.blueDot} />
+              <View>
+                <Text style={styles.routeLabel}>Pickup location</Text>
+                <Text style={styles.routeName}>{trip?.originAddress ?? trip?.originCity ?? '--'}</Text>
+              </View>
             </View>
-            <Text style={styles.distance}>2.2km</Text>
+            <View style={styles.routeLine} />
+            <View style={styles.routeRow}>
+              <Ionicons name="location" size={20} color="#FFCC00" />
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text style={styles.routeLabel}>Drop off Location</Text>
+                <Text style={styles.routeName}>
+                  {trip?.destinationAddress ?? trip?.destinationCity ?? '--'}
+                </Text>
+              </View>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.divider} />
+          <View style={styles.divider} />
 
-        {/* Driver Info */}
-        <View style={styles.driverRow}>
-          <View style={styles.driverAvatar}>
-            <Ionicons name="person-circle" size={46} color="#CBD5E1" />
-          </View>
-          <View style={styles.driverInfo}>
-            <Text style={styles.driverName}>Daniel Asante</Text>
-            <Text style={styles.driverMeta}>Toyota Vitz  •  GW-1234-22</Text>
-          </View>
-          <View style={styles.driverActions}>
-            <TouchableOpacity style={styles.actionBtn}>
-              <Ionicons name="call" size={20} color="#0056B3" />
+          <View style={styles.driverRow}>
+            <View style={styles.driverAvatar}>
+              <Ionicons name="person-circle" size={46} color="#CBD5E1" />
+            </View>
+            <View style={styles.driverInfo}>
+              <Text style={styles.driverName}>{getBookingDriverName(booking)}</Text>
+              <Text style={styles.driverMeta}>On the way to pickup</Text>
+            </View>
+            <TouchableOpacity style={styles.callBtn} onPress={() => router.push('/(rider)/chat')}>
+              <Ionicons name="chatbubble-ellipses" size={20} color="#0056B3" />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionBtn, styles.chatBtn]}
-              onPress={() => router.push('/(rider)/chat')}
-            >
-              <Ionicons name="chatbubble" size={20} color="#FFF" />
-            </TouchableOpacity>
           </View>
-        </View>
-
-        <View style={styles.divider} />
-
-        {/* Fare */}
-        <View style={styles.fareRow}>
-          <View style={styles.fareIconBg}>
-            <Ionicons name="card" size={22} color="#0056B3" />
-          </View>
-          <View style={{ marginLeft: 12 }}>
-            <Text style={styles.fareAmount}>GH¢22.00</Text>
-            <Text style={styles.fareLabel}>Fare for Trip</Text>
-          </View>
-        </View>
+        </ScrollView>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: '#FFF' },
+  centered: { justifyContent: 'center', alignItems: 'center' },
   map: { ...StyleSheet.absoluteFillObject },
-  backBtn: { position: 'absolute', top: 55, left: 16, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 20, paddingVertical: 8, paddingHorizontal: 14, elevation: 4 },
+  backBtn: {
+    position: 'absolute',
+    top: 55,
+    left: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    elevation: 4,
+  },
   backText: { fontSize: 15, marginLeft: 4, fontFamily: 'Roboto_400Regular' },
-  carMarker: { width: 44, height: 44, backgroundColor: '#EEF4FF', borderRadius: 22, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#0056B3' },
+  carMarker: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#FFF',
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+  },
   destMarker: { alignItems: 'center' },
-  sheet: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#FFF', borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 22, paddingBottom: 36 },
-  handle: { width: 40, height: 4, backgroundColor: '#E2E8F0', borderRadius: 2, alignSelf: 'center', marginBottom: 18 },
-  etaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  etaValue: { fontSize: 22, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
-  etaLabel: { fontSize: 11, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
-  statusBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0FDF4', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
-  statusDot: { width: 8, height: 8, backgroundColor: '#10B981', borderRadius: 4, marginRight: 6 },
-  statusText: { fontSize: 12, color: '#059669', fontFamily: 'Roboto_400Regular' },
-  divider: { height: 1, backgroundColor: '#F1F5F9', marginVertical: 14 },
-  routeBlock: { marginBottom: 4 },
+  sheet: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    padding: 22,
+    paddingBottom: 36,
+    maxHeight: '48%',
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  etaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  etaValue: { fontSize: 28, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A' },
+  etaLabel: { fontSize: 13, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 4 },
+  statusBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#ECFDF5', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
+  statusDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#94A3B8' },
+  statusDotLive: { backgroundColor: '#10B981' },
+  statusText: { fontSize: 12, fontFamily: 'Montserrat_600SemiBold', color: '#10B981' },
+  divider: { height: 1, backgroundColor: '#F1F5F9', marginVertical: 16 },
+  routeBlock: {},
   routeRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
   blueDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#0056B3', marginRight: 12 },
   routeLine: { width: 2, height: 16, backgroundColor: '#CBD5E1', marginLeft: 5, marginBottom: 4 },
   routeLabel: { fontSize: 11, color: '#94A3B8', fontFamily: 'Roboto_400Regular' },
   routeName: { fontSize: 14, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
-  distance: { fontSize: 13, color: '#64748B', fontFamily: 'Roboto_400Regular' },
   driverRow: { flexDirection: 'row', alignItems: 'center' },
   driverAvatar: { marginRight: 12 },
   driverInfo: { flex: 1 },
-  driverName: { fontSize: 15, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
+  driverName: { fontSize: 16, fontFamily: 'Montserrat_600SemiBold', color: '#1A1A1A' },
   driverMeta: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
-  driverActions: { flexDirection: 'row', gap: 10 },
-  actionBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#EEF4FF', justifyContent: 'center', alignItems: 'center' },
-  chatBtn: { backgroundColor: '#0056B3' },
-  fareRow: { flexDirection: 'row', alignItems: 'center' },
-  fareIconBg: { width: 46, height: 46, backgroundColor: '#EEF4FF', borderRadius: 23, justifyContent: 'center', alignItems: 'center' },
-  fareAmount: { fontSize: 16, fontFamily: 'Montserrat_500Medium', color: '#1A1A1A' },
-  fareLabel: { fontSize: 12, color: '#94A3B8', fontFamily: 'Roboto_400Regular' },
+  callBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#EEF6FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
