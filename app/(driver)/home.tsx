@@ -10,6 +10,7 @@ import { getDriverBookingRequests, getRiderName } from '../../src/api/bookings';
 import { getDriverEarningsSummary, getNumericAmount } from '../../src/api/drivers';
 import { formatCurrency, formatDepartureDate, getMyUpcomingTrips, getTripPrice } from '../../src/api/trips';
 import { getMyVehicles } from '../../src/api/vehicles';
+import { getMilesBalance, getMizMilesWallet } from '../../src/api/mizMiles';
 import type { Trip } from '../../src/api/trip-types';
 import type { DriverBookingRequest } from '../../src/api/bookings';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -30,31 +31,38 @@ export default function DriverDashboardScreen() {
   const [upcomingTrip, setUpcomingTrip] = useState<Trip | null>(null);
   const [pendingRequests, setPendingRequests] = useState<DriverBookingRequest[]>([]);
   const [needsVehicleSetup, setNeedsVehicleSetup] = useState(false);
+  const [mizMilesBalance, setMizMilesBalance] = useState(0);
 
   const displayName = user?.firstName
     ? [user.firstName, user.lastName].filter(Boolean).join(' ')
     : 'Driver';
 
   const loadDashboard = useCallback(async () => {
-    try {
-      const [summary, upcoming, requests, vehicles] = await Promise.all([
+    // Loaded independently (not Promise.all) so one failing card — e.g. a rider
+    // account that hasn't finished driver onboarding hitting a driver-only
+    // endpoint — doesn't block the rest of the dashboard from populating.
+    const [summaryResult, upcomingResult, requestsResult, vehiclesResult, walletResult] =
+      await Promise.allSettled([
         getDriverEarningsSummary(),
         getMyUpcomingTrips({ limit: 1 }),
         getDriverBookingRequests(),
         getMyVehicles(),
+        getMizMilesWallet(),
       ]);
-      setNeedsVehicleSetup(vehicles.length === 0);
+
+    if (summaryResult.status === 'fulfilled') {
+      const summary = summaryResult.value;
       setEarningsSummary({
         balance: getNumericAmount(summary.currentBalance ?? summary.totalEarnings),
         weekly: getNumericAmount(summary.weeklyEarnings ?? summary.monthlyEarnings),
         ridesToday: summary.totalRides ?? summary.activeRides ?? 0,
       });
-      setUpcomingTrip(upcoming.data[0] ?? null);
-      setPendingRequests(requests);
-    } catch {
-      setUpcomingTrip(null);
-      setPendingRequests([]);
     }
+
+    setUpcomingTrip(upcomingResult.status === 'fulfilled' ? upcomingResult.value.data[0] ?? null : null);
+    setPendingRequests(requestsResult.status === 'fulfilled' ? requestsResult.value : []);
+    setNeedsVehicleSetup(vehiclesResult.status === 'fulfilled' ? vehiclesResult.value.length === 0 : false);
+    setMizMilesBalance(walletResult.status === 'fulfilled' ? getMilesBalance(walletResult.value) : 0);
   }, []);
 
   useEffect(() => {
@@ -314,7 +322,7 @@ export default function DriverDashboardScreen() {
                  <Ionicons name="star-outline" size={20} color="#1A1A1A" />
               </View>
               <Text style={[styles.statsLabelSmall, { color: 'rgba(0,0,0,0.6)' }]}>Miz Miles</Text>
-              <Text style={[styles.statsValueSmall, { color: '#1A1A1A' }]}>1.2k <Text style={{ fontSize: 13 }}>pts</Text></Text>
+              <Text style={[styles.statsValueSmall, { color: '#1A1A1A' }]}>{mizMilesBalance} <Text style={{ fontSize: 13 }}>pts</Text></Text>
             </View>
           </View>
 
