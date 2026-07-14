@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 export function toApiDateString(date: Date): string {
@@ -67,12 +68,25 @@ export async function compressImageForUpload(
   return result.uri;
 }
 
-export function appendImageToFormData(
+export async function appendImageToFormData(
   formData: FormData,
   fieldName: string,
   uri?: string | null
 ) {
   if (!uri) {
+    return;
+  }
+
+  // React Native's FormData understands the {uri, name, type} object shape and
+  // reads the file from disk itself. The web FormData is the browser's native
+  // implementation, which has no such polyfill — passing that object just
+  // stringifies to "[object Object]" instead of attaching a file. On web the
+  // uri is a blob:/data: URL, so fetch it back into a real Blob to attach.
+  if (Platform.OS === 'web') {
+    const blob = await (await fetch(uri)).blob();
+    const extension =
+      blob.type === 'image/png' ? 'png' : blob.type === 'image/webp' ? 'webp' : 'jpg';
+    formData.append(fieldName, blob, `${fieldName}.${extension}`);
     return;
   }
 

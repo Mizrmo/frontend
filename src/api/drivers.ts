@@ -82,7 +82,7 @@ export const uploadDriverDocuments = async (files: DriverDocumentsUpload) => {
       continue;
     }
     const compressedUri = await compressImageForUpload(uri);
-    appendImageToFormData(formData, fieldName, compressedUri);
+    await appendImageToFormData(formData, fieldName, compressedUri);
   }
 
   const response = await apiClient.post('/drivers/documents', formData, {

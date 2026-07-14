@@ -83,9 +83,9 @@ export const updateProfile = async (data: UpdateProfileDto) => {
 
 export const uploadProfilePhoto = async (photoUri: string) => {
   const formData = new FormData();
-  appendImageToFormData(formData, 'avatar', photoUri);
+  await appendImageToFormData(formData, 'file', photoUri);
 
-  const response = await apiClient.patch<User>('/auth/me', formData, {
+  const response = await apiClient.patch<User>('/auth/me/avatar', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response.data;
