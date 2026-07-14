@@ -15,7 +15,6 @@ import {
   Pressable,
 } from 'react-native';
 import DateTimePicker from '../../components/DateTimePicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MapView } from '../../components/Map';
 import { useLocalSearchParams, useRouter } from 'expo-router';

@@ -6,7 +6,6 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '../../components/DateTimePicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
 import { initiateRegistration } from '../../src/api/auth';
 import { getApiErrorMessage, isValidationError } from '../../src/api/errors';
