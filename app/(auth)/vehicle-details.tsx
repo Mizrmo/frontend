@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '../../components/DateTimePicker';
 import * as ImagePicker from 'expo-image-picker';
 import { applyForDriver, addDriverVehicle, uploadDriverDocuments } from '../../src/api/drivers';
 import { getApiErrorMessage } from '../../src/api/errors';

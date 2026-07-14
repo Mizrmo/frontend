@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '../../components/DateTimePicker';
 import { MapView, Marker, Polyline } from '../../components/Map';
 import { Ionicons } from '@expo/vector-icons';
 import { extractCityLabel, toApiDate } from '../../src/api/trip-types';
