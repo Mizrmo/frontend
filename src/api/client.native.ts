@@ -64,17 +64,17 @@ async function handleUnauthorized(
   error: AxiosError,
   originalRequest: RetriableRequest
 ) {
-  if (isAuthEndpoint(originalRequest.url) || originalRequest._retried) {
-    await clearAuthSession();
-    if (isAuthEndpoint(originalRequest.url)) {
-      router.replace('/(auth)/signin');
-    }
+  const url = originalRequest.url;
+
+  // Wrong password / invalid login — let the sign-in screen show the error.
+  if (url?.includes('/auth/login')) {
     return Promise.reject(error);
   }
 
-  const newAccessToken = await refreshAccessToken();
-  if (!newAccessToken) {
-    await clearAuthSession();
+  await clearAuthSession();
+
+  // Expired token on a protected route — return to sign in.
+  if (!isAuthEndpoint(url)) {
     router.replace('/(auth)/signin');
     return Promise.reject(error);
   }

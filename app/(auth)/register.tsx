@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ScrollView, Alert, Image, ActivityIndicator
+  KeyboardAvoidingView, Platform, ScrollView, Image, ActivityIndicator
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '../../components/DateTimePicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
 import { initiateRegistration } from '../../src/api/auth';
-import { getApiErrorMessage } from '../../src/api/errors';
+import { getApiErrorMessage, isValidationError } from '../../src/api/errors';
 import { clearAuthSession } from '../../src/api/tokens';
 import { formatGhanaPhoneNumber, splitFullName } from '../../src/api/utils';
 
@@ -23,9 +25,17 @@ export default function RegisterScreen() {
   const [agreed, setAgreed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [feedback, setFeedback] = useState({ visible: false, title: '', message: '' });
 
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    setShowPicker(false);
+  const showError = (title: string, message: string) => {
+    setFeedback({ visible: true, title, message });
+  };
+
+  const onDateChange = (event: { type?: string }, selectedDate?: Date) => {
+    if (Platform.OS === 'android' || event.type === 'dismissed') {
+      setShowPicker(false);
+      return;
+    }
     if (selectedDate) {
       setFormData({ ...formData, dob: selectedDate });
     }
@@ -37,15 +47,15 @@ export default function RegisterScreen() {
 
   const handleSignUp = async () => {
     if (!formData.name.trim() || !formData.phone.trim()) {
-      Alert.alert('Required', 'Please fill in your name and phone number.');
+      showError('Required', 'Please fill in your name and phone number.');
       return;
     }
     if (!formData.email.trim()) {
-      Alert.alert('Required', 'Please enter your email address.');
+      showError('Required', 'Please enter your email address.');
       return;
     }
     if (!agreed) {
-      Alert.alert('Terms', 'Please agree to the Terms of service and Privacy policy.');
+      showError('Terms', 'Please agree to the Terms of service and Privacy policy.');
       return;
     }
 
@@ -74,7 +84,10 @@ export default function RegisterScreen() {
         },
       });
     } catch (error) {
-      Alert.alert('Registration failed', getApiErrorMessage(error));
+      showError(
+        isValidationError(error) ? 'Check your details' : 'Registration failed',
+        getApiErrorMessage(error)
+      );
     } finally {
       setIsLoading(false);
     }
@@ -165,12 +178,20 @@ export default function RegisterScreen() {
         </View>
 
         {showPicker && (
-          <DateTimePicker
-            value={formData.dob}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onDateChange}
-          />
+          <>
+            <DateTimePicker
+              value={formData.dob}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              maximumDate={new Date()}
+              onChange={onDateChange}
+            />
+            {Platform.OS === 'ios' ? (
+              <TouchableOpacity style={styles.pickerDoneBtn} onPress={() => setShowPicker(false)}>
+                <Text style={styles.pickerDoneText}>Done</Text>
+              </TouchableOpacity>
+            ) : null}
+          </>
         )}
 
         {/* Terms */}
@@ -220,6 +241,14 @@ export default function RegisterScreen() {
         </TouchableOpacity>
 
       </ScrollView>
+
+      <AuthFeedbackModal
+        visible={feedback.visible}
+        variant="error"
+        title={feedback.title}
+        message={feedback.message}
+        onClose={() => setFeedback((prev) => ({ ...prev, visible: false }))}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -280,5 +309,13 @@ const styles = StyleSheet.create({
   signinRow: { alignItems: 'center', marginTop: 25 },
   signinText: { fontSize: 14, color: '#1A1A1A', fontFamily: 'Roboto_400Regular' },
   signinLink: { fontWeight: 'bold', color: '#0056B3' },
-  socialIcon: { width: 20, height: 20 }
+  socialIcon: { width: 20, height: 20 },
+  pickerDoneBtn: {
+    alignSelf: 'flex-end',
+    marginTop: 8,
+    marginBottom: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  pickerDoneText: { color: '#0056B3', fontSize: 16, fontFamily: 'Montserrat_600SemiBold' },
 });

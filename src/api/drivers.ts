@@ -85,6 +85,11 @@ export const uploadDriverDocuments = async (files: DriverDocumentsUpload) => {
     await appendImageToFormData(formData, fieldName, compressedUri);
   }
 
+  const hasFiles = entries.some(([, uri]) => Boolean(uri));
+  if (!hasFiles) {
+    return null;
+  }
+
   const response = await apiClient.post('/drivers/documents', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });

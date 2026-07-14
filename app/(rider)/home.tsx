@@ -26,6 +26,7 @@ import { useProfilePhoto } from '../../src/hooks/useProfilePhoto';
 import { useProfileBio } from '../../src/hooks/useProfileBio';
 import { useDeviceLocation } from '../../src/hooks/useDeviceLocation';
 import { toMapRegion } from '../../src/utils/userLocation';
+import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
 
 const { width } = Dimensions.get('window');
 
@@ -269,17 +270,14 @@ export default function RiderHomeScreen() {
       </Modal>
 
       {/* Welcome back modal (after sign in) */}
-      <Modal visible={showWelcomeModal} transparent animationType="fade">
-        <View style={styles.loadingOverlay}>
-          <View style={styles.successBox}>
-            <View style={[styles.successIconBg, styles.welcomeIconBg]}>
-              <Ionicons name="car-sport" size={36} color="#FFF" />
-            </View>
-            <Text style={styles.successTitle}>Welcome back, {welcomeName}!</Text>
-            <Text style={styles.successSub}>Ride with us, your next trip is just a tap away.</Text>
-          </View>
-        </View>
-      </Modal>
+      <AuthFeedbackModal
+        visible={showWelcomeModal}
+        variant="success"
+        title={`Welcome back, ${welcomeName}!`}
+        message="Ride with us — your next trip is just a tap away."
+        showButton={false}
+        onClose={() => setShowWelcomeModal(false)}
+      />
 
       {/* Success Modal */}
       <Modal visible={showSuccessModal} transparent animationType="fade">
@@ -430,7 +428,6 @@ const styles = StyleSheet.create({
   
   successBox: { backgroundColor: '#FFF', padding: 40, borderRadius: 32, alignItems: 'center', elevation: 12, width: '80%' },
   successIconBg: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#10B981', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  welcomeIconBg: { backgroundColor: '#0056B3' },
   successTitle: {
     fontSize: 22,
     fontFamily: 'Montserrat_700Bold',

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator, Image
+  KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
 import { login } from '../../src/api/auth';
 import { getApiErrorMessage } from '../../src/api/errors';
 import { useAuth } from '../../src/context/AuthContext';
@@ -16,10 +17,19 @@ export default function SignInScreen() {
   const [formData, setFormData] = useState({ identifier: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    visible: boolean;
+    title: string;
+    message: string;
+  }>({ visible: false, title: '', message: '' });
+
+  const showLoginError = (title: string, message: string) => {
+    setFeedback({ visible: true, title, message });
+  };
 
   const handleSignIn = async () => {
     if (!formData.identifier.trim() || !formData.password) {
-      Alert.alert('Required', 'Please enter your email or phone number and password.');
+      showLoginError('Unable to log in', 'Please enter your email or phone number and password.');
       return;
     }
 
@@ -34,16 +44,16 @@ export default function SignInScreen() {
         data.user
       );
       const route = await resolvePostAuthRoute(data.user);
-      if (route === '/(rider)/home') {
+      if (route === '/(rider)/home' || route === '/(driver)/home') {
         router.replace({
-          pathname: '/(rider)/home',
+          pathname: route,
           params: { welcomeBack: '1' },
         });
       } else {
         router.replace(route);
       }
     } catch (error) {
-      Alert.alert('Sign in failed', getApiErrorMessage(error));
+      showLoginError('Unable to log in', getApiErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -118,6 +128,14 @@ export default function SignInScreen() {
            </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <AuthFeedbackModal
+        visible={feedback.visible}
+        variant="error"
+        title={feedback.title}
+        message={feedback.message}
+        onClose={() => setFeedback((prev) => ({ ...prev, visible: false }))}
+      />
     </KeyboardAvoidingView>
   );
 }

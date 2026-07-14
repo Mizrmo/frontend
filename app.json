@@ -24,6 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.mizrmo.app",
+      "softwareKeyboardLayoutMode": "resize",
       "intentFilters": [
         {
           "action": "VIEW",
