@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, 
   Dimensions, Modal, Image, Platform, ActivityIndicator, Alert
 } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { getDriverBookingRequests, getRiderName } from '../../src/api/bookings';
@@ -15,17 +15,22 @@ import type { DriverBookingRequest } from '../../src/api/bookings';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ProfileAvatar } from '../../components/ProfileAvatar';
 import { useProfilePhoto } from '../../src/hooks/useProfilePhoto';
+import { useProfileBio } from '../../src/hooks/useProfileBio';
+import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
 
 const { width } = Dimensions.get('window');
 
 export default function DriverDashboardScreen() {
   const router = useRouter();
+  const { welcomeBack } = useLocalSearchParams<{ welcomeBack?: string }>();
   const { signOut, user, switchRole } = useAuth();
   const { photoUri, reload: reloadProfilePhoto } = useProfilePhoto();
+  const { bio: profileBio, reload: reloadProfileBio } = useProfileBio();
   const [menuVisible, setMenuVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [earningsSummary, setEarningsSummary] = useState({ balance: 0, weekly: 0, ridesToday: 0 });
   const [upcomingTrip, setUpcomingTrip] = useState<Trip | null>(null);
   const [pendingRequests, setPendingRequests] = useState<DriverBookingRequest[]>([]);
@@ -34,6 +39,17 @@ export default function DriverDashboardScreen() {
   const displayName = user?.firstName
     ? [user.firstName, user.lastName].filter(Boolean).join(' ')
     : 'Driver';
+
+  const welcomeName = user?.firstName?.trim() || 'there';
+
+  useEffect(() => {
+    if (welcomeBack !== '1') {
+      return;
+    }
+    setShowWelcomeModal(true);
+    const timer = setTimeout(() => setShowWelcomeModal(false), 2800);
+    return () => clearTimeout(timer);
+  }, [welcomeBack]);
 
   const loadDashboard = useCallback(async () => {
     try {
@@ -64,13 +80,15 @@ export default function DriverDashboardScreen() {
   useEffect(() => {
     if (menuVisible) {
       reloadProfilePhoto();
+      reloadProfileBio();
     }
-  }, [menuVisible, reloadProfilePhoto]);
+  }, [menuVisible, reloadProfilePhoto, reloadProfileBio]);
 
   useFocusEffect(
     useCallback(() => {
       reloadProfilePhoto();
-    }, [reloadProfilePhoto])
+      reloadProfileBio();
+    }, [reloadProfilePhoto, reloadProfileBio])
   );
 
   const menuItems = [
@@ -162,6 +180,9 @@ export default function DriverDashboardScreen() {
                     <ProfileAvatar size={64} uri={photoUri} />
                     <View style={styles.profileInfo}>
                         <Text style={styles.userName}>{displayName}</Text>
+                        {profileBio.trim() ? (
+                          <Text style={styles.userBio} numberOfLines={2}>{profileBio.trim()}</Text>
+                        ) : null}
                         <TouchableOpacity onPress={() => navigateTo('/(profile)/edit-profile')}>
                             <Text style={styles.profileLink}>Profile</Text>
                         </TouchableOpacity>
@@ -210,6 +231,15 @@ export default function DriverDashboardScreen() {
           </View>
         </View>
       </Modal>
+
+      <AuthFeedbackModal
+        visible={showWelcomeModal}
+        variant="success"
+        title={`Welcome back, ${welcomeName}!`}
+        message="You're all set — start advertising rides when you're ready."
+        showButton={false}
+        onClose={() => setShowWelcomeModal(false)}
+      />
 
       {/* Success Modal */}
       <Modal visible={showSuccessModal} transparent animationType="fade">
@@ -569,6 +599,13 @@ const styles = StyleSheet.create({
   avatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#F1F5F9' },
   profileInfo: { marginLeft: 15 },
   userName: { fontSize: 18, fontFamily: 'Montserrat_700Bold', color: '#1A1A1A' },
+  userBio: {
+    fontSize: 13,
+    fontFamily: 'Roboto_400Regular',
+    color: '#64748B',
+    marginTop: 4,
+    lineHeight: 18,
+  },
   profileLink: { fontSize: 14, color: '#94A3B8', fontFamily: 'Roboto_400Regular', marginTop: 2 },
   switchPill: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F8FAFC', paddingVertical: 10, paddingHorizontal: 15, borderRadius: 25, alignSelf: 'flex-start', marginBottom: 30, borderWidth: 1, borderColor: '#F1F5F9' },
   yellowCircle: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#FFCC00', justifyContent: 'center', alignItems: 'center', marginRight: 10 },

@@ -32,10 +32,17 @@ async function handleUnauthorized(
   error: AxiosError,
   originalRequest: InternalAxiosRequestConfig
 ) {
-  // Backend does not expose POST /auth/refresh yet — surface the original 401 instead.
+  const url = originalRequest.url;
+
+  // Wrong password / invalid login — let the sign-in screen show the error.
+  if (url?.includes('/auth/login')) {
+    return Promise.reject(error);
+  }
+
   await clearAuthSession();
 
-  if (isAuthEndpoint(originalRequest.url)) {
+  // Expired token on a protected route — return to sign in.
+  if (!isAuthEndpoint(url)) {
     router.replace('/(auth)/signin');
   }
 

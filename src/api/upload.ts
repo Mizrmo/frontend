@@ -57,12 +57,12 @@ export function getCityCoordinates(city: string): { lat: number; lng: number } {
 
 export async function compressImageForUpload(
   uri: string,
-  maxWidth = 1024
+  maxWidth = 1280
 ): Promise<string> {
   const result = await ImageManipulator.manipulateAsync(
     uri,
     [{ resize: { width: maxWidth } }],
-    { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+    { compress: 0.65, format: ImageManipulator.SaveFormat.JPEG }
   );
   return result.uri;
 }

@@ -8,6 +8,7 @@ import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold, Mo
 import { Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
 import { AuthProvider } from '../src/context/AuthContext';
 import { PushNotificationsRegistrar } from '../components/PushNotificationsRegistrar';
+import { preloadAuthFeedbackMascots } from '../components/AuthFeedbackModal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +25,10 @@ export default function RootLayout() {
     Roboto_400Regular,
     Roboto_500Medium
   });
+
+  useEffect(() => {
+    void preloadAuthFeedbackMascots();
+  }, []);
 
   useEffect(() => {
     if (loaded || error) {

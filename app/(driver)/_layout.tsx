@@ -39,7 +39,13 @@ export default function DriverLayout() {
         }} 
       />
       {/* Hidden screens - set href to null to hide from bottom bar */}
-      <Tabs.Screen name="advertise-ride" options={{ href: null }} />
+      <Tabs.Screen
+        name="advertise-ride"
+        options={{
+          href: null,
+          tabBarStyle: { display: 'none' },
+        }}
+      />
       <Tabs.Screen name="ride-confirmed" options={{ href: null }} />
       <Tabs.Screen name="start-ride" options={{ href: null }} />
       <Tabs.Screen name="incoming-request" options={{ href: null }} />

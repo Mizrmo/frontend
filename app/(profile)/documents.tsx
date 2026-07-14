@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,12 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { uploadDriverDocuments, type DriverDocumentsUpload } from '../../src/api/drivers';
-import { getApiErrorMessage } from '../../src/api/errors';
+import { getApiErrorMessage, isDriverApplyRequiredError } from '../../src/api/errors';
+import { getMyVehicles } from '../../src/api/vehicles';
 
 interface Document {
   id: string;
@@ -28,6 +29,33 @@ export default function UserDocumentsScreen() {
   const router = useRouter();
   const [images, setImages] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState<string | null>(null);
+  const [needsDriverSetup, setNeedsDriverSetup] = useState(false);
+
+  const checkDriverSetup = useCallback(async () => {
+    try {
+      const vehicles = await getMyVehicles();
+      setNeedsDriverSetup(vehicles.length === 0);
+    } catch {
+      setNeedsDriverSetup(true);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void checkDriverSetup();
+    }, [checkDriverSetup])
+  );
+
+  const goToDriverSetup = () => {
+    router.push('/(auth)/vehicle-details');
+  };
+
+  const showApplyRequiredAlert = (message: string) => {
+    Alert.alert('Driver setup required', message, [
+      { text: 'Not now', style: 'cancel' },
+      { text: 'Complete setup', onPress: goToDriverSetup },
+    ]);
+  };
 
   const documents: Document[] = [
     {
@@ -60,6 +88,13 @@ export default function UserDocumentsScreen() {
   const statusLabels = { verified: 'Verified', pending: 'Under Review', missing: 'Upload Required' };
 
   const pickDocument = async (doc: Document) => {
+    if (needsDriverSetup) {
+      showApplyRequiredAlert(
+        'Complete your driver registration first. You can upload documents after your profile is created.'
+      );
+      return;
+    }
+
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission required', 'Allow photo library access to upload documents.');
@@ -69,7 +104,7 @@ export default function UserDocumentsScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
-      quality: 0.5,
+      quality: 0.7,
     });
     if (result.canceled) {
       return;
@@ -88,7 +123,13 @@ export default function UserDocumentsScreen() {
         delete next[doc.imageKey];
         return next;
       });
-      Alert.alert('Upload failed', getApiErrorMessage(error));
+      const message = getApiErrorMessage(error);
+      if (isDriverApplyRequiredError(error)) {
+        setNeedsDriverSetup(true);
+        showApplyRequiredAlert(message);
+        return;
+      }
+      Alert.alert('Upload failed', message);
     } finally {
       setUploading(null);
     }
@@ -109,6 +150,19 @@ export default function UserDocumentsScreen() {
         <Text style={styles.infoText}>
           Upload clear photos of your documents. All documents are reviewed within 24 hours.
         </Text>
+
+        {needsDriverSetup ? (
+          <TouchableOpacity style={styles.setupBanner} onPress={goToDriverSetup}>
+            <Ionicons name="car-outline" size={22} color="#0056B3" />
+            <View style={styles.setupBannerText}>
+              <Text style={styles.setupBannerTitle}>Complete driver registration first</Text>
+              <Text style={styles.setupBannerSub}>
+                Submit your licence, Ghana Card, and vehicle details before uploading here.
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#0056B3" />
+          </TouchableOpacity>
+        ) : null}
 
         {documents.map((doc) => (
           <View key={doc.id} style={styles.docCard}>
@@ -165,6 +219,20 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#1A1A1A' },
   content: { padding: 20, paddingBottom: 40 },
   infoText: { fontSize: 14, color: '#64748B', lineHeight: 20, marginBottom: 25, paddingHorizontal: 4 },
+  setupBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    gap: 12,
+  },
+  setupBannerText: { flex: 1 },
+  setupBannerTitle: { fontSize: 15, fontWeight: '600', color: '#1A1A1A' },
+  setupBannerSub: { fontSize: 13, color: '#64748B', marginTop: 4, lineHeight: 18 },
   docCard: {
     backgroundColor: '#FFF',
     borderRadius: 16,
