@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   Alert,
   Linking,
   ActivityIndicator,
@@ -14,8 +13,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { MapView } from '../../components/Map';
 import { getCurrentDeviceLocation } from '../../src/utils/userLocation';
-
-const { width } = Dimensions.get('window');
 
 export default function EnableLocationScreen() {
   const router = useRouter();
@@ -106,7 +103,8 @@ const styles = StyleSheet.create({
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
   popupContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
   popup: {
-    width: width - 40,
+    width: '100%',
+    maxWidth: 360,
     backgroundColor: '#FFF',
     borderRadius: 28,
     padding: 30,

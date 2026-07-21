@@ -120,9 +120,9 @@ const styles = StyleSheet.create({
   title: { fontSize: 22, color: '#1A1A1A', marginBottom: 6, fontFamily: 'Montserrat_500Medium', lineHeight: 30, textAlign: 'center' },
   subtitle: { fontSize: 15, color: '#B8B8B8', fontFamily: 'Roboto_400Regular', marginBottom: 24, textAlign: 'center' },
   form: { gap: 16, width: '100%', alignItems: 'center' },
-  inputWrap: { height: 45, width: 362, backgroundColor: '#FFF', borderRadius: 42, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center' },
+  inputWrap: { height: 45, width: '100%', maxWidth: 362, backgroundColor: '#FFF', borderRadius: 42, borderWidth: 1, borderColor: '#E2E8F0', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center' },
   input: { flex: 1, fontSize: 14, color: '#000', fontFamily: 'Roboto_400Regular' },
-  submitBtn: { backgroundColor: '#0056B3', height: 45, width: 362, borderRadius: 42, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
+  submitBtn: { backgroundColor: '#0056B3', height: 45, width: '100%', maxWidth: 362, borderRadius: 42, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
   submitBtnText: { color: '#FFF', fontSize: 16, fontFamily: 'Roboto_400Regular' },
   showIcon: { width: 22, height: 22, tintColor: '#94A3B8' },
 });

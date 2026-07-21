@@ -10,6 +10,7 @@ import { Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
 import { AuthProvider } from '../src/context/AuthContext';
 import { PushNotificationsRegistrar } from '../components/PushNotificationsRegistrar';
 import { preloadAuthFeedbackMascots } from '../components/AuthFeedbackModal';
+import { WebAppShell } from '../components/WebAppShell';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,19 +47,21 @@ export default function RootLayout() {
       <AuthProvider>
         <PushNotificationsRegistrar />
         <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'slide_from_right',
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="payment-return" options={{ animation: 'fade' }} />
-          <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
-          <Stack.Screen name="(rider)" options={{ animation: 'fade' }} />
-          <Stack.Screen name="(driver)" options={{ animation: 'fade' }} />
-          <Stack.Screen name="(profile)" options={{ animation: 'slide_from_right' }} />
-        </Stack>
+        <WebAppShell>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Screen name="payment-return" options={{ animation: 'fade' }} />
+            <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+            <Stack.Screen name="(rider)" options={{ animation: 'fade' }} />
+            <Stack.Screen name="(driver)" options={{ animation: 'fade' }} />
+            <Stack.Screen name="(profile)" options={{ animation: 'slide_from_right' }} />
+          </Stack>
+        </WebAppShell>
       </AuthProvider>
     </SafeAreaProvider>
   );

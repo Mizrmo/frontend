@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { 
   View, Text, StyleSheet, TouchableOpacity, ScrollView, 
-  Dimensions, Modal, Image, Platform, ActivityIndicator, Alert
+  Modal, Image, Platform, ActivityIndicator, Alert
 } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -18,8 +18,6 @@ import { ProfileAvatar } from '../../components/ProfileAvatar';
 import { useProfilePhoto } from '../../src/hooks/useProfilePhoto';
 import { useProfileBio } from '../../src/hooks/useProfileBio';
 import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
-
-const { width } = Dimensions.get('window');
 
 export default function DriverDashboardScreen() {
   const router = useRouter();

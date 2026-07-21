@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   View, Text, StyleSheet, TouchableOpacity, ScrollView, 
-  Dimensions, Modal, Platform, ActivityIndicator, Alert
+  Modal, Platform, ActivityIndicator, Alert
 } from 'react-native';
 import { MapView, Marker } from '../../components/Map';
 import { ProfileAvatar } from '../../components/ProfileAvatar';
@@ -27,8 +27,6 @@ import { useProfileBio } from '../../src/hooks/useProfileBio';
 import { useDeviceLocation } from '../../src/hooks/useDeviceLocation';
 import { toMapRegion } from '../../src/utils/userLocation';
 import { AuthFeedbackModal } from '../../components/AuthFeedbackModal';
-
-const { width } = Dimensions.get('window');
 
 export default function RiderHomeScreen() {
   const router = useRouter();
