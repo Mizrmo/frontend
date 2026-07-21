@@ -11,7 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { getConfigString, getPublicConfig } from '../../src/api/config';
@@ -29,6 +29,7 @@ const faqs = [
 
 export default function HelpSupportScreen() {
   const router = useRouter();
+  const { topic } = useLocalSearchParams<{ topic?: string }>();
   const { activeRole } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,6 +62,15 @@ export default function HelpSupportScreen() {
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (topic === 'driver-approval') {
+      setTicketSubject('Driver approval follow-up');
+      setTicketMessage(
+        'I completed driver onboarding and my application is still pending approval. Please advise on the status.'
+      );
+    }
+  }, [topic]);
 
   const filtered = faqs.filter(f =>
     f.q.toLowerCase().includes(searchQuery.toLowerCase())
